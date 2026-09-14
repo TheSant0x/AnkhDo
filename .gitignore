@@ -1,0 +1,9 @@
+# user data (never publish)
+tasks.json
+
+# build artifact
+*.shell-extension.zip
+
+# OS cruft
+.DS_Store
+Thumbs.db

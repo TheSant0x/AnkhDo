@@ -1,6 +1,6 @@
 {
   "uuid": "gnome-todo@claudeai",
-  "name": "Scroll of Deeds",
+  "name": "Ankh Do",
   "description": "A pharaonic-themed todo manager for your top panel — timers, reordering, and a Scroll of Deeds.",
   "version": 1,
   "shell-version": ["45", "46", "47", "48"]

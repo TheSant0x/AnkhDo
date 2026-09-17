@@ -79,7 +79,7 @@ function saveTasks(ext, tasks) {
 
 const MENU_WIDTH = 560;
 const MENU_HEIGHT = 460;
-const TITLE_MAX_WIDTH = 230;
+const TITLE_MAX_WIDTH = 320;
 const MAX_TITLE_LEN = 120;   // cap on a task's text length
 
 // Unique id even for tasks created within the same millisecond.
@@ -120,7 +120,7 @@ const GnomeTodoIndicator = GObject.registerClass(
 class GnomeTodoIndicator extends PanelMenu.Button {
 
     _init(ext) {
-        super._init(0.0, 'Scroll of Deeds');
+        super._init(0.0, 'Ankh Do');
         this._ext = ext;
         this._tasks = loadTasks(ext);
         this._editRowId = null;
@@ -132,7 +132,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._timerLabels = new Map();
 
         const panelBox = new St.BoxLayout({ style: 'spacing:6px;' });
-        panelBox.add_child(glyph(ext, 'eye-of-horus', 20, 'gnome-todo-panel-eye'));
+        panelBox.add_child(glyph(ext, 'ankh', 20, 'gnome-todo-panel-ankh'));
         this._panelCount = new St.Label({
             text: `${this._tasks.filter(t => !t.done).length}`,
             y_align: Clutter.ActorAlign.CENTER,
@@ -144,9 +144,14 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         // Pin width on the content box so the popup is always MENU_WIDTH wide,
         // whether it holds tasks or the empty state (min-width on the outer
-        // actor alone lets a narrow empty state shrink the menu).
-        this.menu.actor.style = `min-width:${MENU_WIDTH}px;`;
-        this.menu.box.style = `min-width:${MENU_WIDTH}px;`;
+        // actor alone lets a narrow empty state shrink the menu). The warm
+        // tomb gradient matches the Chrome popup (#191207 → #130E07).
+        const menuBg =
+            'background-gradient-direction:vertical;' +
+            'background-gradient-start:#191207;' +
+            'background-gradient-end:#130E07;';
+        this.menu.actor.style = `min-width:${MENU_WIDTH}px;${menuBg}`;
+        this.menu.box.style = `min-width:${MENU_WIDTH}px;${menuBg}`;
 
         // ── Header cartouche (sun emblem · title · remaining count) ──────
         const headerItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
@@ -158,7 +163,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         });
         header.add_child(glyph(ext, 'winged-sun', 20, 'gnome-todo-header-emblem'));
         header.add_child(new St.Label({
-            text: 'SCROLL OF DEEDS',
+            text: 'ANKH DO',
             y_align: Clutter.ActorAlign.CENTER,
             style_class: 'gnome-todo-header-title',
         }));
@@ -337,7 +342,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         inputShell.add_child(glyph(this._ext, 'scarab', 18, 'gnome-todo-add-scarab'));
 
         const entry = new St.Entry({
-            hint_text: 'Inscribe a task…',
+            hint_text: 'Inscribe a deed…',
             can_focus: true, x_expand: true,
             style_class: 'gnome-todo-entry',
         });
@@ -680,8 +685,8 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         // Idle (not-done) rows reveal their time on hover; a done task's final
         // count stays visible at rest.
         if (timerLbl && !task.running && !task.done) revealables.push(timerLbl);
-        for (const a of revealables) a.visible = false;
-        const setRevealed = shown => { for (const a of revealables) a.visible = shown; };
+        for (const a of revealables) a.opacity = 0;
+        const setRevealed = shown => { for (const a of revealables) a.opacity = shown ? 255 : 0; };
         item.connect('notify::hover', () => {
             setRevealed(item.hover);
             if (item.hover) this._showTooltip(titleLbl, task.title, item);

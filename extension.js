@@ -21,6 +21,7 @@ const C = {
     silver:     '#C3CCE0',   // Thoth's moon silver — edit
     ochre:      '#E89A4F',   // sunset ochre — clear completed
     cream:      '#EAD9B0',   // papyrus cream — primary text
+    doneText:   '#7A84A3',   // faded slate — finished titles recede
 };
 
 // ── Storage ──────────────────────────────────────────────────────────────
@@ -739,7 +740,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         titleLbl.clutter_text.set_line_wrap(false);
         if (task.done) {
             titleLbl.clutter_text.set_markup(
-                `<span strikethrough="true" foreground="${C.malachite}">${GLib.markup_escape_text(task.title, -1)}</span>`
+                `<span strikethrough="true" foreground="${C.doneText}">${GLib.markup_escape_text(task.title, -1)}</span>`
             );
         }
         row.add_child(titleLbl);

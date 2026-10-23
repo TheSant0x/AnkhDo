@@ -1,15 +1,17 @@
 /* Ankh Do — Pharaonic theme
  * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
- * text, ~10% accents. Each accent is a material the Egyptians used, given
- * the job that matches what it meant to them:
+ * text, ~10% accents. Colour marks state; everything at rest is neutral.
+ * Each accent is a material the Egyptians used, given the matching job:
  *   gold       #E8C56A  the gods' flesh      → brand (ankh + title)
- *   turquoise  #45C4B0  Hathor's faience     → panel indicator · open seals
+ *   turquoise  #45C4B0  Hathor's faience     → panel · running task
  *   lapis      #6F9AE0  the gods' hair, sky  → header count · add field · copy · drag
- *   malachite  #5FB98A  wadj: life, renewal  → done · running timer
+ *   malachite  #5FB98A  wadj: life, renewal  → the done seal
  *   silver     #C3CCE0  Thoth's moon (scribe)→ edit
  *   carnelian  #E0654B  desher: chaos        → delete
  *   ochre      #E89A4F  sunset in the West   → clear completed
  *   cream      #EAD9B0  papyrus              → text
+ *   slate      #5E6A95 / #A3ABC6 / #7A84A3   → resting rings · resting icons · done text
+ * Accents on buttons appear only on hover, where the action is about to happen.
  */
 
 /* ── Panel ────────────────────────────────────────────────────────── */
@@ -114,19 +116,11 @@
 }
 
 .gnome-todo-row-running {
-    background-color: rgba(95, 185, 138, 0.08);
+    background-color: rgba(69, 196, 176, 0.08);
 }
 
 .gnome-todo-row-running:hover {
-    background-color: rgba(95, 185, 138, 0.14);
-}
-
-.gnome-todo-row-done {
-    background-color: rgba(95, 185, 138, 0.06);
-}
-
-.gnome-todo-row-done:hover {
-    background-color: rgba(95, 185, 138, 0.12);
+    background-color: rgba(69, 196, 176, 0.14);
 }
 
 .gnome-todo-row:focus {
@@ -154,12 +148,12 @@
 }
 
 .gnome-todo-title-done {
-    color: #5FB98A;
+    color: #7A84A3;
 }
 
 /* ── Checkbox (a round seal) ──────────────────────────────────────── */
-/* Open: a turquoise faience ring. Done: a solid malachite disc bearing the
-   Feather of Ma'at. padding:0 keeps it a true circle around the glyph. */
+/* Open: a quiet slate ring (turquoise on hover). Done: a solid malachite disc
+   bearing the Feather of Ma'at. padding:0 keeps it a true circle. */
 .gnome-todo-checkbox {
     width: 22px;
     height: 22px;
@@ -167,14 +161,14 @@
     min-height: 22px;
     padding: 0;
     border-radius: 11px;
-    border: 2px solid #45C4B0;
-    background-color: rgba(69, 196, 176, 0.06);
+    border: 2px solid #5E6A95;
+    background-color: transparent;
     transition-duration: 150ms;
 }
 
 .gnome-todo-checkbox:hover {
-    border-color: #6FDCCB;
-    background-color: rgba(69, 196, 176, 0.18);
+    border-color: #45C4B0;
+    background-color: rgba(69, 196, 176, 0.16);
 }
 
 .gnome-todo-checkbox-done {
@@ -201,7 +195,7 @@
 }
 
 .gnome-todo-timer-label-active {
-    color: #5FB98A;
+    color: #45C4B0;
 }
 
 /* ── Icon buttons ─────────────────────────────────────────────────── */
@@ -216,66 +210,53 @@
     transition-duration: 150ms;
 }
 
-/* Copy — lapis lazuli */
-.gnome-todo-row .gnome-todo-icon-copy {
-    color: #6F9AE0;
-    background-color: rgba(111, 154, 224, 0.13);
+/* At rest every button is a plain slate icon; each takes its colour only
+   under the pointer. */
+.gnome-todo-row .gnome-todo-icon-btn {
+    color: #A3ABC6;
+    background-color: transparent;
 }
 
+/* Copy — lapis lazuli */
 .gnome-todo-row .gnome-todo-icon-copy:hover {
     color: #9DBEF0;
-    background-color: rgba(111, 154, 224, 0.26);
+    background-color: rgba(111, 154, 224, 0.20);
 }
 
 /* Copy success — malachite */
 .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied,
 .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied:hover {
     color: #5FB98A;
-    background-color: rgba(95, 185, 138, 0.24);
+    background-color: rgba(95, 185, 138, 0.22);
 }
 
 /* Edit — silver (Thoth, moon god and patron of scribes) */
-.gnome-todo-row .gnome-todo-icon-edit {
-    color: #C3CCE0;
-    background-color: rgba(195, 204, 224, 0.12);
-}
-
 .gnome-todo-row .gnome-todo-icon-edit:hover {
-    color: #E4E9F4;
-    background-color: rgba(195, 204, 224, 0.24);
+    color: #EEF1F8;
+    background-color: rgba(195, 204, 224, 0.20);
 }
 
 /* Delete — carnelian */
-.gnome-todo-row .gnome-todo-icon-delete {
-    color: #E0654B;
-    background-color: rgba(224, 101, 75, 0.13);
-}
-
 .gnome-todo-row .gnome-todo-icon-delete:hover {
     color: #F08063;
-    background-color: rgba(224, 101, 75, 0.26);
+    background-color: rgba(224, 101, 75, 0.20);
 }
 
-/* Timer — idle */
-.gnome-todo-row .gnome-todo-icon-timer {
-    color: #8790AE;
-    background-color: rgba(135, 144, 174, 0.14);
-}
-
+/* Timer — starting one turns the task turquoise, so preview that */
 .gnome-todo-row .gnome-todo-icon-timer:hover {
-    color: #5FB98A;
-    background-color: rgba(95, 185, 138, 0.20);
+    color: #6FDCCB;
+    background-color: rgba(69, 196, 176, 0.18);
 }
 
-/* Timer — running */
+/* Timer — running: a state, so it keeps its colour at rest */
 .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active {
-    color: #5FB98A;
-    background-color: rgba(95, 185, 138, 0.18);
+    color: #45C4B0;
+    background-color: rgba(69, 196, 176, 0.14);
 }
 
 .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active:hover {
-    color: #7FD3A6;
-    background-color: rgba(95, 185, 138, 0.28);
+    color: #6FDCCB;
+    background-color: rgba(69, 196, 176, 0.24);
 }
 
 /* ── Drag to reorder ─────────────────────────────────────────────── */
@@ -392,9 +373,9 @@
     padding: 0 12px;
     margin-left: 8px;
     border-radius: 10px;
-    color: #E89A4F;
-    background-color: rgba(232, 154, 79, 0.13);
-    border: 1px solid rgba(232, 154, 79, 0.32);
+    color: #A3ABC6;
+    background-color: rgba(234, 217, 176, 0.04);
+    border: 1px solid rgba(234, 217, 176, 0.12);
     transition-duration: 150ms;
 }
 
@@ -407,7 +388,11 @@
 .gnome-todo-clear-count {
     font-size: 12px;
     font-weight: 800;
-    color: #E89A4F;
+    color: #A3ABC6;
+}
+
+.gnome-todo-clear-btn:hover .gnome-todo-clear-count {
+    color: #F2B57A;
 }
 
 /* ── Clear-completed confirmation card (sunset) ───────────────────── */

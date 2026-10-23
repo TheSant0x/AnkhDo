@@ -26,11 +26,11 @@ Drag to reorder, time your deeds, undo mistakes — under a tomb-ceiling sky of 
 - **Hover to reveal** a row's controls; long titles show a full-text tooltip.
 - **Clear completed** as a gentle "send to the West" (sunset), with a confirm card.
 - **Fully keyboard-driven** — see the shortcuts below.
-- A palette where every colour has one job, each a material the Egyptians used:
-  a night-lapis ground (Nut's starry sky on tomb ceilings), **gold** for the
-  name, **turquoise** for open tasks, **lapis** for the add field, **malachite**
-  for done and running, **silver** for edit, **carnelian** for delete, and
-  **sunset ochre** for clearing completed deeds.
+- A calm palette where colour marks state, each accent a material the
+  Egyptians used: a night-lapis ground (Nut's starry sky on tomb ceilings),
+  **gold** for the name, **turquoise** for the running task, **malachite** for
+  the done seal, **lapis** for the add field, and — only under the pointer —
+  **silver** to edit, **carnelian** to delete, **sunset ochre** to clear.
 
 ## Screenshots
 

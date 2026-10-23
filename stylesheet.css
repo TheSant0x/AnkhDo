@@ -483,3 +483,249 @@
 .gnome-todo-confirm-glyph {
     color: #E89A4F;
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   Off-white theme (Settings → "Off-white theme")
+   A papyrus ground with ink text. Accents keep their meanings, in deeper
+   shades so they stay readable on light (all text ≥ 4.5:1, controls ≥ 3:1).
+   ════════════════════════════════════════════════════════════════════ */
+.gnome-todo-light .gnome-todo-header {
+    border-bottom-color: rgba(43, 36, 24, 0.10);
+}
+
+.gnome-todo-light .gnome-todo-header-emblem,
+.gnome-todo-light .gnome-todo-header-title {
+    color: #8A6510;
+}
+
+.gnome-todo-light .gnome-todo-header-count {
+    color: #2C5BAA;
+    background-color: rgba(44, 91, 170, 0.09);
+    border-color: rgba(44, 91, 170, 0.25);
+}
+
+.gnome-todo-light .gnome-todo-empty-glyph { color: #2E7D4F; }
+.gnome-todo-light .gnome-todo-empty-title { color: #2B2418; }
+.gnome-todo-light .gnome-todo-empty-hint { color: #736A58; }
+
+/* rows */
+.gnome-todo-light .gnome-todo-row:hover,
+.gnome-todo-light .gnome-todo-row:focus {
+    background-color: rgba(43, 36, 24, 0.05);
+}
+
+.gnome-todo-light .gnome-todo-kbd-nav .gnome-todo-row:focus,
+.gnome-todo-light.gnome-todo-kbd-nav .gnome-todo-row:focus {
+    box-shadow: inset 0 0 0 1px rgba(44, 91, 170, 0.55);
+}
+
+.gnome-todo-light .gnome-todo-row-running {
+    background-color: rgba(10, 115, 104, 0.08);
+}
+
+.gnome-todo-light .gnome-todo-row.gnome-todo-row-running:hover,
+.gnome-todo-light .gnome-todo-row.gnome-todo-row-running:focus {
+    background-color: rgba(10, 115, 104, 0.13);
+}
+
+.gnome-todo-light .gnome-todo-title { color: #2B2418; }
+.gnome-todo-light .gnome-todo-title-done { color: #8E8573; }
+
+.gnome-todo-light .gnome-todo-grip { color: #8F846E; }
+.gnome-todo-light .gnome-todo-grip:hover { color: #4A5368; }
+
+.gnome-todo-light .gnome-todo-checkbox {
+    border-color: #8F846E;
+}
+
+.gnome-todo-light .gnome-todo-checkbox:hover {
+    border-color: #0A7368;
+    background-color: rgba(10, 115, 104, 0.10);
+}
+
+.gnome-todo-light .gnome-todo-checkbox-done,
+.gnome-todo-light .gnome-todo-checkbox-done:hover {
+    border-color: #2E7D4F;
+    background-color: #2E7D4F;
+}
+
+.gnome-todo-light .gnome-todo-check-feather { color: #FFF8E8; }
+
+.gnome-todo-light .gnome-todo-timer-label { color: #736A58; }
+.gnome-todo-light .gnome-todo-timer-label-active { color: #0A7368; }
+
+/* row buttons: slate at rest, their colour under the pointer */
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn { color: #6A6252; }
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-copy:hover {
+    color: #2C5BAA;
+    background-color: rgba(44, 91, 170, 0.12);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied,
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied:hover {
+    color: #2E7D4F;
+    background-color: rgba(46, 125, 79, 0.14);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-edit:hover {
+    color: #2B2418;
+    background-color: rgba(74, 83, 104, 0.12);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-delete:hover {
+    color: #B23A22;
+    background-color: rgba(178, 58, 34, 0.11);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer:hover {
+    color: #0A7368;
+    background-color: rgba(10, 115, 104, 0.11);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active {
+    color: #0A7368;
+    background-color: rgba(10, 115, 104, 0.10);
+}
+
+.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active:hover {
+    background-color: rgba(10, 115, 104, 0.18);
+}
+
+.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging,
+.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging:hover,
+.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging:focus {
+    background-color: #FFFDF8;
+    box-shadow: inset 0 0 0 1px rgba(44, 91, 170, 0.55);
+}
+
+/* add field */
+.gnome-todo-light .gnome-todo-add-scarab { color: #2C5BAA; }
+
+.gnome-todo-light .gnome-todo-input-shell {
+    background-color: #FFFDF8;
+    border-color: rgba(44, 91, 170, 0.25);
+}
+
+.gnome-todo-light .gnome-todo-input-shell:hover {
+    background-color: #FFFFFF;
+    border-color: rgba(44, 91, 170, 0.45);
+}
+
+.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry,
+.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:hover,
+.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:focus,
+.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:active {
+    color: #2B2418 !important;
+}
+
+.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry StLabel.hint-text {
+    color: #736A58 !important;
+}
+
+/* edit row */
+.gnome-todo-light .gnome-todo-edit-shell {
+    background-color: rgba(74, 83, 104, 0.06);
+}
+
+.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry,
+.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:hover,
+.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+    background-color: #FFFDF8 !important;
+    border-color: rgba(74, 83, 104, 0.35) !important;
+    color: #2B2418 !important;
+    selection-background-color: rgba(44, 91, 170, 0.25);
+    selected-color: #2B2418;
+}
+
+.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+    border-color: #4A5368 !important;
+}
+
+.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry StLabel.hint-text {
+    color: #736A58 !important;
+}
+
+.gnome-todo-light .gnome-todo-save-btn {
+    color: #FFFFFF;
+    background-color: #4A5368;
+}
+
+.gnome-todo-light .gnome-todo-save-btn:hover { background-color: #3A4256; }
+
+.gnome-todo-light .gnome-todo-cancel-btn { color: #6A6252; }
+
+.gnome-todo-light .gnome-todo-cancel-btn:hover {
+    color: #2B2418;
+    background-color: rgba(43, 36, 24, 0.06);
+}
+
+/* clear completed + confirmation (sunset) */
+.gnome-todo-light .gnome-todo-clear-btn {
+    color: #6A6252;
+    background-color: rgba(43, 36, 24, 0.03);
+    border-color: rgba(43, 36, 24, 0.12);
+}
+
+.gnome-todo-light .gnome-todo-clear-btn:hover {
+    color: #A9550F;
+    background-color: rgba(169, 85, 15, 0.10);
+    border-color: rgba(169, 85, 15, 0.40);
+}
+
+.gnome-todo-light .gnome-todo-clear-count { color: #6A6252; }
+.gnome-todo-light .gnome-todo-clear-btn:hover .gnome-todo-clear-count { color: #A9550F; }
+
+.gnome-todo-light .gnome-todo-clear-glyph,
+.gnome-todo-light .gnome-todo-confirm-glyph { color: #A9550F; }
+
+.gnome-todo-light .gnome-todo-confirm-shell {
+    background-color: rgba(169, 85, 15, 0.06);
+    border-color: rgba(169, 85, 15, 0.28);
+}
+
+.gnome-todo-light .gnome-todo-confirm-icon {
+    color: #A9550F;
+    background-color: rgba(169, 85, 15, 0.12);
+}
+
+.gnome-todo-light .gnome-todo-confirm-title { color: #2B2418; }
+.gnome-todo-light .gnome-todo-confirm-sub { color: #6A6252; }
+
+.gnome-todo-light .gnome-todo-confirm-remove {
+    color: #FFFFFF;
+    background-color: #A9550F;
+}
+
+.gnome-todo-light .gnome-todo-confirm-remove:hover { background-color: #8E470C; }
+
+/* undo bar */
+.gnome-todo-light .gnome-todo-undo-shell {
+    background-color: rgba(43, 36, 24, 0.04);
+    border-color: rgba(43, 36, 24, 0.10);
+}
+
+.gnome-todo-light .gnome-todo-undo-label { color: #6A6252; }
+
+.gnome-todo-light .gnome-todo-undo-btn {
+    color: #2C5BAA;
+    background-color: rgba(44, 91, 170, 0.10);
+}
+
+.gnome-todo-light .gnome-todo-undo-btn:hover {
+    color: #224A8C;
+    background-color: rgba(44, 91, 170, 0.20);
+}
+
+/* tooltip (lives outside the menu, so it carries the class itself) */
+.gnome-todo-tooltip.gnome-todo-light {
+    background-color: #FFFDF8;
+    border-color: rgba(43, 36, 24, 0.16);
+    color: #2B2418;
+    box-shadow: 0 6px 18px rgba(43, 36, 24, 0.18);
+}
+
+/* The shell's separator is drawn for dark menus; tint it ink on papyrus. */
+.gnome-todo-light .popup-separator-menu-item-separator {
+    background-color: rgba(43, 36, 24, 0.12);
+}

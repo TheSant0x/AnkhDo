@@ -10,3 +10,6 @@ Thumbs.db
 
 # Chrome package (built from chrome/)
 ankh-do-chrome.zip
+
+# compiled locally for the symlinked dev install
+schemas/gschemas.compiled

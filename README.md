@@ -39,6 +39,8 @@ Each keeps its own list; they don't sync.
   focus it with the keyboard) and stay out of the way otherwise.
 - **Fully keyboard-driven.** Every action has a key — see below.
 - **Clear completed** with one click, after a gentle confirmation.
+- **Off-white theme (GNOME).** Prefer light? Switch to a papyrus look in the
+  extension's settings; the menu changes instantly.
 - **Calm by design.** Colour marks state, not decoration: turquoise for the task
   you're timing, malachite for the done seal, and button colours only under the
   pointer.
@@ -71,6 +73,14 @@ add a task. Press <kbd>↑</kbd> to move into the list.
 | <kbd>C</kbd> | Copy the task's text |
 | <kbd>Delete</kbd> | Delete (with undo) |
 | <kbd>Esc</kbd> | Cancel an edit or confirmation; otherwise close |
+
+## Settings (GNOME)
+
+Open **Extensions → Ankh Do → Settings**, or run
+`gnome-extensions prefs ankh-do@thesant0x.github.io`.
+
+- **Off-white theme**: a light papyrus ground with ink text, instead of night
+  lapis. Accents keep their meanings in deeper shades so they stay readable.
 
 ## Install
 

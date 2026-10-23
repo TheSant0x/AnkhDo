@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ankh-do" path="/org/gnome/shell/extensions/ankh-do/">
+    <key name="light-theme" type="b">
+      <default>false</default>
+      <summary>Off-white theme</summary>
+      <description>Show the menu in a light, papyrus-coloured theme instead of night lapis.</description>
+    </key>
+  </schema>
+</schemalist>

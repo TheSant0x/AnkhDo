@@ -22,6 +22,7 @@ const C = {
     ochre:      '#E89A4F',   // sunset ochre — clear completed
     cream:      '#EAD9B0',   // papyrus cream — primary text
     doneText:   '#7A84A3',   // faded slate — finished titles recede
+    doneTextLight: '#8E8573',  // faded ink on the off-white theme
 };
 
 // ── Storage ──────────────────────────────────────────────────────────────
@@ -125,6 +126,8 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._saving = false;
         this._saveWanted = false;
         this._cancellable = new Gio.Cancellable();
+        this._settings = null;
+        this._themeChangedId = 0;
         this._editRowId = null;
         this._drag = null;
         this._rowActors = [];
@@ -156,16 +159,10 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         // Fixed width on the content box: titles flex to fill a row, so a long
         // title must ellipsize rather than widen the menu.
         // Night-lapis gradient: a tomb ceiling — deep blue, gold stars.
-        // Only on the content box: the outer actor is a plain rectangle that
-        // also covers the margin around the rounded bubble.
-        const menuBg =
-            'background-gradient-direction:vertical;' +
-            'background-gradient-start:#171B2E;' +
-            'background-gradient-end:#10131F;' +
-            'border-color:rgba(111,154,224,0.28);';
         this.menu.actor.style = `min-width:${MENU_WIDTH}px;`;
         this.menu.actor.add_style_class_name('gnome-todo-menu');
-        this.menu.box.style = `width:${MENU_WIDTH}px;${menuBg}`;
+        this._settings = ext.getSettings();
+        this._applyTheme();
 
         // ── Header (ankh · title · remaining count) ──────────────────────
         const headerItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
@@ -215,6 +212,10 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         // Drag-to-reorder. Captured on the menu itself: while open, the menu's
         // grab means events never reach global.stage.
+        this._themeChangedId = this._settings.connect('changed::light-theme', () => {
+            this._applyTheme();
+            this._buildMenu();
+        });
         this._menuCaptureId = this.menu.actor.connect('captured-event', (_a, event) => this._onMenuCapture(event));
 
         // Focus the "add task" field whenever the menu opens.
@@ -254,6 +255,26 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _stopTick() {
         if (this._tickTimer) GLib.source_remove(this._tickTimer);
         this._tickTimer = 0;
+    }
+
+    // ── Theme ────────────────────────────────────────────────────────
+    get _light() {
+        return this._settings.get_boolean('light-theme');
+    }
+
+    // The ground is set inline on the content box only: the outer actor is a
+    // plain rectangle that also covers the margin around the rounded bubble.
+    _applyTheme() {
+        const light = this._light;
+        const [top, bottom, border] = light
+            ? ['#FBF7EE', '#F2EBDC', 'rgba(110,90,50,0.22)']
+            : ['#171B2E', '#10131F', 'rgba(111,154,224,0.28)'];
+        this.menu.box.style = `width:${MENU_WIDTH}px;` +
+            'background-gradient-direction:vertical;' +
+            `background-gradient-start:${top};background-gradient-end:${bottom};` +
+            `border-color:${border};`;
+        if (light) this.menu.actor.add_style_class_name('gnome-todo-light');
+        else this.menu.actor.remove_style_class_name('gnome-todo-light');
     }
 
     // ── Storage (asynchronous, so the shell never waits on the disk) ───
@@ -315,7 +336,10 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         catch { truncated = text.length > 28; }
         if (!truncated) return;
         this._hideTooltip();
-        const tt = new St.Label({ text, style_class: 'gnome-todo-tooltip' });
+        const tt = new St.Label({
+            text,
+            style_class: this._light ? 'gnome-todo-tooltip gnome-todo-light' : 'gnome-todo-tooltip',
+        });
         tt.clutter_text.set_line_wrap(true);
         tt.clutter_text.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);
         Main.uiGroup.add_child(tt);
@@ -788,7 +812,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         titleLbl.clutter_text.set_line_wrap(false);
         if (task.done) {
             titleLbl.clutter_text.set_markup(
-                `<span strikethrough="true" foreground="${C.doneText}">${GLib.markup_escape_text(task.title, -1)}</span>`
+                `<span strikethrough="true" foreground="${this._light ? C.doneTextLight : C.doneText}">${GLib.markup_escape_text(task.title, -1)}</span>`
             );
         }
         row.add_child(titleLbl);
@@ -1105,6 +1129,8 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._cancellable.cancel();
         this.menu.actor.disconnect(this._menuCaptureId);
         this.menu.disconnect(this._menuOpenId);
+        this._settings.disconnect(this._themeChangedId);
+        this._settings = null;
         this._hideTooltip();
         this._dropUndo();
         super.destroy();

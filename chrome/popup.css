@@ -1,0 +1,213 @@
+/* Ankh Do — Pharaonic theme (Chrome popup). Mirrors the GNOME extension.
+ * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
+ * text, ~10% accents. Colour marks state; everything at rest is neutral.
+ *   gold       the gods' flesh      → brand (ankh + title)
+ *   turquoise  Hathor's faience     → toolbar badge · running task
+ *   lapis      the gods' hair, sky  → header count · add field · copy · drag
+ *   malachite  wadj: life, renewal  → the done seal
+ *   silver     Thoth's moon (scribe)→ edit
+ *   carnelian  desher: chaos        → delete
+ *   ochre      sunset in the West   → clear completed
+ * Accents on buttons appear only on hover, where the action is about to happen.
+ */
+:root{
+  --bg-top:#171B2E; --bg-bottom:#10131F; --surface:#1C2136; --surface-hi:#20263D;
+  --gold:#E8C56A;
+  --turquoise:#45C4B0; --turquoise-hi:#6FDCCB;
+  --lapis:#6F9AE0; --lapis-hi:#9DBEF0;
+  --malachite:#5FB98A; --seal:#4FA678;
+  --silver:#C3CCE0; --carnelian:#E0654B; --carnelian-hi:#F08063;
+  --ochre:#E89A4F; --ochre-hi:#F2B57A;
+  --cream:#EAD9B0;
+  --ring:#5E6A95;       /* resting checkbox ring */
+  --slate:#A3ABC6;      /* resting icons, secondary text */
+  --muted:#8790AE;      /* timers, hints */
+  --done-text:#7A84A3;  /* finished titles recede */
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html,body{background:var(--bg-bottom)}
+body{
+  width:560px;
+  font-family:system-ui,-apple-system,"Segoe UI",Cantarell,sans-serif;
+  color:var(--cream); -webkit-font-smoothing:antialiased;
+}
+#app{background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom))}
+svg{display:block; width:100%; height:100%}
+.icon{display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto}
+button{font-family:inherit}
+
+/* ── Header ─────────────────────────────────────────────── */
+.header{
+  display:flex; align-items:center; gap:9px;
+  padding:12px 16px 10px; border-bottom:1px solid rgba(111,154,224,.22);
+}
+.header-emblem{width:20px; height:20px; color:var(--gold)}
+.header-title{font-weight:800; color:var(--gold); font-size:13px}
+.header-count{
+  margin-left:auto; font-size:11px; font-weight:700; color:var(--lapis-hi);
+  background:rgba(111,154,224,.14); border:1px solid rgba(111,154,224,.32);
+  border-radius:9px; padding:2px 10px; font-variant-numeric:tabular-nums;
+}
+
+/* ── List ───────────────────────────────────────────────── */
+/* Grows with its tasks, scrolls past the cap (Chrome popups max out at 600px). */
+.list{position:relative; max-height:440px; overflow-y:auto; padding:4px 6px}
+.list::-webkit-scrollbar{width:8px}
+.list::-webkit-scrollbar-thumb{background:rgba(111,154,224,.22); border-radius:8px}
+
+.row{
+  display:flex; align-items:center; gap:8px;
+  /* Fixed to the icon-button height so revealing the hover controls never
+     changes the row height (that shifted rows under the pointer → jitter). */
+  min-height:44px; padding:8px 14px 8px 4px; border-radius:10px;
+  user-select:none; outline:none;
+  transition:background .15s ease, transform .14s ease-out;
+}
+.row:hover, .row:focus{background:rgba(234,217,176,.06)}
+.row:focus-visible{box-shadow:inset 0 0 0 1px rgba(111,154,224,.65)}
+.row.running{background:rgba(69,196,176,.08)}
+.row.running:hover{background:rgba(69,196,176,.14)}
+
+/* Controls are hidden (and take no space) until the row is hovered or focused. */
+.row:not(:hover):not(:focus-within) .reveal{display:none}
+
+/* Drag grip: shown on hover; keeps its space so nothing shifts. */
+.grip{width:14px; height:14px; flex:0 0 auto; color:var(--muted); opacity:0; cursor:grab;
+  transition:opacity .15s ease, color .15s ease}
+.row:hover .grip, .row:focus-within .grip{opacity:1}
+.grip:hover{color:var(--silver)}
+
+.row.dragging{
+  position:relative; z-index:2; transition:background .15s ease;
+  background:#222A45; box-shadow:inset 0 0 0 1px rgba(111,154,224,.70);
+}
+body.dragging, body.dragging *{cursor:grabbing !important}
+
+/* checkbox — a round seal: quiet slate ring open, malachite disc done */
+.chk{
+  width:22px; height:22px; flex:0 0 auto; border-radius:11px;
+  border:2px solid var(--ring); background:transparent;
+  cursor:pointer; padding:0; display:grid; place-items:center;
+  transition:border-color .15s ease, background .15s ease;
+}
+.chk:hover{border-color:var(--turquoise); background:rgba(69,196,176,.16)}
+.row.done .chk{border-color:var(--seal); background:var(--seal)}
+.row.done .chk:hover{border-color:var(--malachite); background:var(--malachite)}
+.row.done .chk .icon{width:12px; height:12px; color:#F6EAC8}
+
+.title{
+  flex:1 1 auto; min-width:0; font-size:14px; font-weight:600; color:var(--cream);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:default;
+}
+.row.done .title{color:var(--done-text); text-decoration:line-through;
+  text-decoration-color:rgba(122,132,163,.8)}
+
+/* timer: the counter sits flush right at rest; its button appears on hover */
+.timer{display:flex; align-items:center; gap:4px; flex:0 0 auto}
+.t-lbl{font-size:11px; font-weight:700; color:var(--muted); min-width:58px;
+  text-align:right; font-variant-numeric:tabular-nums}
+.row.running .t-lbl{color:var(--turquoise)}
+
+.controls{display:flex; align-items:center; gap:4px; flex:0 0 auto}
+
+/* At rest every button is a plain slate icon; each takes its colour only
+   under the pointer. */
+.ibtn{
+  width:28px; height:28px; border-radius:8px; border:none; cursor:pointer; padding:0;
+  display:grid; place-items:center; color:var(--slate); background:transparent;
+  transition:background .15s ease, color .15s ease;
+}
+.ibtn .icon{width:16px; height:16px}
+.ibtn.copy:hover{color:var(--lapis-hi); background:rgba(111,154,224,.20)}
+.ibtn.copy.copied, .ibtn.copy.copied:hover{color:var(--malachite); background:rgba(95,185,138,.22)}
+.ibtn.edit:hover{color:#EEF1F8; background:rgba(195,204,224,.20)}
+.ibtn.del:hover{color:var(--carnelian-hi); background:rgba(224,101,75,.20)}
+/* starting a timer turns the task turquoise, so preview that */
+.ibtn.timer-btn:hover{color:var(--turquoise-hi); background:rgba(69,196,176,.18)}
+/* a running timer is a state, so it keeps its colour */
+.row.running .ibtn.timer-btn{color:var(--turquoise); background:rgba(69,196,176,.14)}
+.row.running .ibtn.timer-btn:hover{color:var(--turquoise-hi); background:rgba(69,196,176,.24)}
+
+/* ── Empty state ────────────────────────────────────────── */
+.empty{display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:36px 16px 32px}
+.empty .glyph{width:50px; height:50px; color:var(--malachite)}
+.empty h3{margin-top:14px; font-size:15px; font-weight:700; color:var(--cream)}
+.empty p{margin-top:4px; font-size:12px; color:var(--muted)}
+
+/* ── Bottom ─────────────────────────────────────────────── */
+.sep{height:1px; background:rgba(111,154,224,.16); margin:0 16px}
+.bottom{padding:0 14px 14px}
+
+/* Undo bar (after deleting a task) */
+.undo{
+  display:flex; align-items:center; gap:10px; margin-top:8px;
+  padding:5px 6px 5px 14px; border-radius:10px;
+  background:rgba(234,217,176,.05); border:1px solid rgba(234,217,176,.12);
+}
+.undo .msg{flex:1 1 auto; min-width:0; font-size:12.5px; font-weight:600; color:var(--slate);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.btn.undo-btn{font-size:12px; font-weight:800; color:var(--lapis-hi);
+  background:rgba(111,154,224,.16); padding:5px 14px}
+.btn.undo-btn:hover{color:#C4D8F7; background:rgba(111,154,224,.30)}
+
+.addrow{display:flex; align-items:stretch; gap:8px; margin-top:10px}
+/* The scarab in lapis, as in royal jewellery. */
+.input-shell{
+  flex:1 1 auto; display:flex; align-items:center; gap:18px;
+  background:var(--surface); border:1px solid rgba(111,154,224,.30);
+  min-height:52px; border-radius:10px; padding:8px 12px 8px 14px;
+  transition:border-color .15s ease, background .15s ease;
+}
+/* The field is always focused, so only hover brightens it (as in GNOME). */
+.input-shell:hover{border-color:rgba(111,154,224,.60); background:var(--surface-hi)}
+.input-shell .scarab{width:18px; height:18px; color:var(--lapis)}
+.input-shell input{
+  flex:1 1 auto; min-width:0; background:none; border:none; outline:none;
+  color:var(--cream); font-size:13px; font-weight:600; font-family:inherit;
+}
+.input-shell input::placeholder{color:var(--muted)}
+
+/* Clear-completed: quiet until hovered; the sunset (going to the West) in ochre. */
+.clear-btn{
+  display:flex; align-items:center; gap:6px; min-height:52px; padding:0 14px; flex:0 0 auto;
+  border-radius:10px; cursor:pointer; color:var(--slate);
+  background:rgba(234,217,176,.04); border:1px solid rgba(234,217,176,.12);
+  transition:background .15s ease, border-color .15s ease, color .15s ease;
+}
+.clear-btn .icon{width:15px; height:15px; color:var(--ochre)}
+.clear-btn .cnt{font-size:12px; font-weight:800}
+.clear-btn:hover{color:var(--ochre-hi); background:rgba(232,154,79,.24); border-color:rgba(232,154,79,.60)}
+
+/* ── Edit-in-place (silver, matching the edit button) ───── */
+.edit-shell{min-height:44px; padding:8px 14px; border-radius:10px;
+  background:rgba(195,204,224,.06); display:flex; align-items:center; gap:8px}
+.edit-shell input{
+  flex:1 1 auto; min-width:0; background:var(--surface); border:1px solid rgba(195,204,224,.45);
+  border-radius:8px; padding:7px 11px; color:var(--cream); font-size:13px; font-weight:600;
+  font-family:inherit; outline:none;
+}
+.edit-shell input:focus{border-color:var(--silver)}
+.edit-shell input::selection{background:rgba(195,204,224,.35); color:#F4ECD8}
+
+.btn{border:none; cursor:pointer; font-weight:700; border-radius:8px;
+  transition:background .15s ease, color .15s ease}
+.btn.seal{font-size:12px; color:#151A2B; background:var(--silver); padding:6px 16px}
+.btn.seal:hover{background:#DDE3F0}
+.btn.ghost{font-size:12px; color:var(--slate); background:transparent; padding:6px 12px}
+.btn.ghost:hover{color:var(--cream); background:rgba(234,217,176,.08)}
+
+/* ── Clear-completed confirmation card (sunset) ─────────── */
+.confirm{
+  margin-top:8px; padding:14px; border-radius:12px;
+  background:rgba(232,154,79,.08); border:1px solid rgba(232,154,79,.32);
+}
+.confirm .top{display:flex; align-items:center; gap:12px}
+.confirm .medallion{width:38px; height:38px; flex:0 0 auto; border-radius:10px;
+  color:var(--ochre); background:rgba(232,154,79,.18); display:grid; place-items:center}
+.confirm .medallion .icon{width:18px; height:18px}
+.confirm .ttl{font-size:14px; font-weight:800; color:var(--cream)}
+.confirm .sub{font-size:12px; color:var(--slate); margin-top:2px}
+.confirm .actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px}
+.btn.send{font-size:12.5px; color:#2A1606; background:var(--ochre); padding:7px 18px; border-radius:9px}
+.btn.send:hover{background:var(--ochre-hi)}

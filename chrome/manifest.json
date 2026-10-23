@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Ankh Do",
+  "version": "1.1.0",
+  "description": "A pharaonic-themed to-do manager — drag to reorder, timers, undo, and full keyboard control.",
+  "permissions": ["storage"],
+  "background": { "service_worker": "bg.js" },
+  "action": {
+    "default_title": "Ankh Do",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/ankhdo-16.png",
+      "32": "icons/ankhdo-32.png",
+      "48": "icons/ankhdo-48.png",
+      "128": "icons/ankhdo-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/ankhdo-16.png",
+    "32": "icons/ankhdo-32.png",
+    "48": "icons/ankhdo-48.png",
+    "128": "icons/ankhdo-128.png"
+  }
+}

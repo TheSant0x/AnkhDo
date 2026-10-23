@@ -7,3 +7,6 @@ tasks.json
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# Chrome package (built from chrome/)
+ankh-do-chrome.zip

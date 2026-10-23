@@ -80,8 +80,8 @@ Requires GNOME Shell 45, 46, 47 or 48 (developed and tested on 48).
 
 ```bash
 git clone https://github.com/TheSant0x/AnkhDo.git
-ln -s "$PWD/AnkhDo" ~/.local/share/gnome-shell/extensions/gnome-todo@claudeai
-gnome-extensions enable gnome-todo@claudeai
+ln -s "$PWD/AnkhDo" ~/.local/share/gnome-shell/extensions/ankh-do@thesant0x.github.io
+gnome-extensions enable ankh-do@thesant0x.github.io
 ```
 
 Then restart GNOME Shell: **log out and back in** on Wayland, or press
@@ -140,13 +140,16 @@ slate and cream.
 gnome-extensions pack --force --extra-source=icons .
 ```
 
-Upload `gnome-todo@claudeai.shell-extension.zip` at
-<https://extensions.gnome.org/upload/>. The site assigns version numbers, so
-`metadata.json` needs no bump.
+Check it with GNOME's static analyzer, then upload
+`ankh-do@thesant0x.github.io.shell-extension.zip` at
+<https://extensions.gnome.org/upload/>:
 
-> **UUID.** `gnome-todo@claudeai` uses a placeholder domain. To publish under
-> your own, rename the folder and the `uuid` in `metadata.json` (for example to
-> `ankh-do@yourname`) before packing. Existing installs will need to reinstall.
+```bash
+pip install -U shexli
+shexli ankh-do@thesant0x.github.io.shell-extension.zip
+```
+
+The site assigns version numbers, so `metadata.json` needs no bump.
 
 ### Chrome → Chrome Web Store
 
@@ -186,7 +189,6 @@ screenshots/          images for this README
 Code is licensed **GPL-2.0-or-later** — see [`LICENSE`](LICENSE) and
 [`COPYING`](COPYING). Most glyphs are derived from
 [game-icons.net](https://game-icons.net) by **Lorc** and **Delapouite** under
-[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The winged sun-disk,
-the panel ankh, the Chrome toolbar icons and the drag grip are original work
-released under CC0. Per-file attribution is in
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The panel ankh, the
+Chrome toolbar icons and the drag grip are original work released under CC0. Per-file attribution is in
 [`icons/CREDITS.txt`](icons/CREDITS.txt).

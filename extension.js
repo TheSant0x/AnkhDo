@@ -39,8 +39,13 @@ function legacyStoragePath(ext) {
     return GLib.build_filenamev([ext.path, 'tasks.json']);
 }
 
-function parseTasks(file) {
-    const [, bytes] = file.load_contents(null);
+Gio._promisify(Gio.File.prototype, 'load_contents_async');
+Gio._promisify(Gio.File.prototype, 'replace_contents_bytes_async', 'replace_contents_finish');
+
+const isGioError = (e, code) => e instanceof GLib.Error && e.matches(Gio.IOErrorEnum, code);
+
+async function readTasks(path, cancellable) {
+    const [bytes] = await Gio.File.new_for_path(path).load_contents_async(cancellable);
     const tasks = JSON.parse(new TextDecoder('utf-8').decode(bytes)) || [];
     tasks.forEach(t => {
         if (typeof t.elapsedSeconds !== 'number') t.elapsedSeconds = 0;
@@ -50,30 +55,20 @@ function parseTasks(file) {
     return tasks;
 }
 
-function loadTasks(ext) {
-    try {
-        const primary = Gio.File.new_for_path(getStoragePath());
-        if (primary.query_exists(null)) return parseTasks(primary);
-        // One-time migration from the old in-extension location.
-        const legacy = Gio.File.new_for_path(legacyStoragePath(ext));
-        if (legacy.query_exists(null)) {
-            const tasks = parseTasks(legacy);
-            saveTasks(ext, tasks);
-            return tasks;
+// Reads the task file; falls back once to the old in-extension location.
+async function loadTasks(ext, cancellable) {
+    for (const path of [getStoragePath(), legacyStoragePath(ext)]) {
+        try {
+            return { tasks: await readTasks(path, cancellable), migrated: path !== getStoragePath() };
+        } catch (e) {
+            if (isGioError(e, Gio.IOErrorEnum.CANCELLED)) throw e;
+            if (!isGioError(e, Gio.IOErrorEnum.NOT_FOUND)) {
+                console.error(e);
+                break;
+            }
         }
-        return [];
-    } catch { return []; }
-}
-
-function saveTasks(ext, tasks) {
-    try {
-        GLib.mkdir_with_parents(dataDir(), 0o700);
-        const file = Gio.File.new_for_path(getStoragePath());
-        file.replace_contents(
-            new TextEncoder().encode(JSON.stringify(tasks, null, 2)),
-            null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null
-        );
-    } catch (e) { logError(e); }
+    }
+    return { tasks: [], migrated: false };
 }
 
 // GRAB/GRABBING came with mutter's CSS cursor names; older shells (45/46) lack them.
@@ -125,7 +120,11 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _init(ext) {
         super._init(0.0, 'Ankh Do');
         this._ext = ext;
-        this._tasks = loadTasks(ext);
+        this._tasks = [];
+        this._loaded = false;
+        this._saving = false;
+        this._saveWanted = false;
+        this._cancellable = new Gio.Cancellable();
         this._editRowId = null;
         this._drag = null;
         this._rowActors = [];
@@ -135,6 +134,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._undo = null;   // { task, idx, timer, item } for the last deleted task
         this._focusTaskId = null;   // row to re-focus after a keyboard-driven rebuild
         this._rowFocusTimer = 0;
+        this._copyTimer = 0;
         this._tooltip = null;
         this._tooltipForItem = null;
         this._timerLabels = new Map();
@@ -210,13 +210,14 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         this._buildMenu();
         this._updatePanelCount();
+        this._load();
 
         // Drag-to-reorder. Captured on the menu itself: while open, the menu's
         // grab means events never reach global.stage.
-        this.menu.actor.connect('captured-event', (_a, event) => this._onMenuCapture(event));
+        this._menuCaptureId = this.menu.actor.connect('captured-event', (_a, event) => this._onMenuCapture(event));
 
         // Focus the "add task" field whenever the menu opens.
-        this.menu.connect('open-state-changed', (menu, isOpen) => {
+        this._menuOpenId = this.menu.connect('open-state-changed', (menu, isOpen) => {
             if (isOpen) {
                 // Labels were last drawn when the menu closed; bring them current.
                 for (const task of this._tasks) {
@@ -252,6 +253,46 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _stopTick() {
         if (this._tickTimer) GLib.source_remove(this._tickTimer);
         this._tickTimer = 0;
+    }
+
+    // ── Storage (asynchronous, so the shell never waits on the disk) ───
+    async _load() {
+        try {
+            const { tasks, migrated } = await loadTasks(this._ext, this._cancellable);
+            // Anything added in the moment before the file was read stays on top.
+            this._tasks = this._tasks.concat(tasks);
+            this._loaded = true;
+            if (migrated) this._saveWanted = true;
+            if (this._saveWanted) this._flushSave();
+            this._updatePanelCount();
+            this._buildMenu();
+        } catch (e) {
+            if (!isGioError(e, Gio.IOErrorEnum.CANCELLED)) console.error(e);
+        }
+    }
+
+    // Writes are queued: one at a time, always the latest state, so an older
+    // write can never land after a newer one. Nothing is written before the
+    // file has been read, or the saved list would be clobbered.
+    _save() {
+        this._saveWanted = true;
+        if (this._loaded && !this._saving) this._flushSave();
+    }
+
+    async _flushSave() {
+        this._saving = true;
+        while (this._saveWanted) {
+            this._saveWanted = false;
+            try {
+                GLib.mkdir_with_parents(dataDir(), 0o700);
+                const bytes = new GLib.Bytes(new TextEncoder().encode(JSON.stringify(this._tasks, null, 2)));
+                await Gio.File.new_for_path(getStoragePath()).replace_contents_bytes_async(
+                    bytes, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        this._saving = false;
     }
 
     _updatePanelCount() {
@@ -307,14 +348,15 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _showCopyFeedback(btn) {
         const icon = btn.get_child();
         if (!icon) return;
-        const originalIcon = icon.icon_name;
+        // A repeat copy restarts the timer but keeps the real original icon.
+        if (this._copyTimer) GLib.source_remove(this._copyTimer);
+        else this._copyIconName = icon.icon_name;
         icon.icon_name = 'object-select-symbolic';
         btn.add_style_class_name('gnome-todo-copied');
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 900, () => {
-            try {
-                icon.icon_name = originalIcon;
-                btn.remove_style_class_name('gnome-todo-copied');
-            } catch {}
+        this._copyTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 900, () => {
+            this._copyTimer = 0;
+            icon.icon_name = this._copyIconName;
+            btn.remove_style_class_name('gnome-todo-copied');
             return GLib.SOURCE_REMOVE;
         });
     }
@@ -322,6 +364,11 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     // ── Menu build ──────────────────────────────────────────────────────
     _buildMenu() {
         this._hideTooltip();
+        // The copy button the feedback timer points at is about to be destroyed.
+        if (this._copyTimer) {
+            GLib.source_remove(this._copyTimer);
+            this._copyTimer = 0;
+        }
         this._taskSection.removeAll();
         this._bottomSection.removeAll();
         this._timerLabels.clear();
@@ -386,7 +433,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             task.running = false;
             task.startedAt = null;
         }
-        saveTasks(this._ext, this._tasks);
+        this._save();
         this._updatePanelCount();
         this._buildMenu();
     }
@@ -401,7 +448,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             task.running = true;
             task.startedAt = Date.now();
         }
-        saveTasks(this._ext, this._tasks);
+        this._save();
         this._buildMenu();
     }
 
@@ -409,7 +456,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         try {
             St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, task.title);
             this._showCopyFeedback(btn);
-        } catch (e) { logError(e); }
+        } catch (e) { console.error(e); }
     }
 
     _startEdit(task) {
@@ -423,7 +470,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         if (to < 0 || to >= this._tasks.length) return;
         this._tasks.splice(from, 1);
         this._tasks.splice(to, 0, task);
-        saveTasks(this._ext, this._tasks);
+        this._save();
         this._focusTaskId = task.id;
         this._buildMenu();
     }
@@ -496,7 +543,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._dropUndo();
         const idx = this._tasks.indexOf(task);
         this._tasks.splice(idx, 1);
-        saveTasks(this._ext, this._tasks);
+        this._save();
         this._undo = { task, idx, item: null, timer: 0 };
         // Expire by removing just the bar: a full rebuild would discard an
         // in-progress edit elsewhere in the menu.
@@ -513,7 +560,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         const { task, idx } = this._undo;
         this._dropUndo();
         this._tasks.splice(Math.min(idx, this._tasks.length), 0, task);
-        saveTasks(this._ext, this._tasks);
+        this._save();
         this._updatePanelCount();
         this._buildMenu();
     }
@@ -554,7 +601,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
                 id: nextId(), title, done: false,
                 elapsedSeconds: 0, running: false, startedAt: null,
             });
-            saveTasks(this._ext, this._tasks);
+            this._save();
             this._updatePanelCount();
             this._buildMenu();
         });
@@ -654,7 +701,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         });
         confirmBtn.connect('clicked', () => {
             this._tasks = this._tasks.filter(t => !t.done);
-            saveTasks(this._ext, this._tasks);
+            this._save();
             this._updatePanelCount();
             this._confirmingClear = false;
             this._buildMenu();
@@ -910,7 +957,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             if (d.to !== d.idx) {
                 const [moved] = this._tasks.splice(d.idx, 1);
                 this._tasks.splice(d.to, 0, moved);
-                saveTasks(this._ext, this._tasks);
+                this._save();
             }
             this._buildMenu();
             return Clutter.EVENT_STOP;
@@ -1010,7 +1057,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         const commit = () => {
             const val = entry.get_text().trim().slice(0, MAX_TITLE_LEN);
             if (val) task.title = val;
-            saveTasks(this._ext, this._tasks);
+            this._save();
             this._editRowId = null;
             this._focusTaskId = task.id;
             this._buildMenu();
@@ -1049,6 +1096,14 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             GLib.source_remove(this._rowFocusTimer);
             this._rowFocusTimer = 0;
         }
+        if (this._copyTimer) {
+            GLib.source_remove(this._copyTimer);
+            this._copyTimer = 0;
+        }
+        this._cancelDrag();
+        this._cancellable.cancel();
+        this.menu.actor.disconnect(this._menuCaptureId);
+        this.menu.disconnect(this._menuOpenId);
         this._hideTooltip();
         this._dropUndo();
         super.destroy();

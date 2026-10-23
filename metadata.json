@@ -1,7 +1,12 @@
 {
-  "uuid": "gnome-todo@claudeai",
+  "uuid": "ankh-do@thesant0x.github.io",
   "name": "Ankh Do",
-  "description": "A pharaonic-themed todo manager for your top panel — timers, reordering, and a Scroll of Deeds.",
-  "version": 1,
-  "shell-version": ["45", "46", "47", "48"]
+  "description": "A pharaonic to-do list for the top bar.\n\nDrag tasks into order, time them with a per-task stopwatch, undo deletions, and drive everything from the keyboard — in a calm night-lapis and gold theme.\n\nKeys: ↑/↓ move, Alt+↑/↓ reorder, Space done, Enter/F2 edit, T timer, C copy, Delete delete, Esc back.\n\nTasks stay on your machine (~/.config/scroll-of-deeds/tasks.json). The clipboard is used only to copy a task's text when you press its copy button or C.",
+  "url": "https://github.com/TheSant0x/AnkhDo",
+  "shell-version": [
+    "45",
+    "46",
+    "47",
+    "48"
+  ]
 }

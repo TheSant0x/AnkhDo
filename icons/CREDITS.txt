@@ -11,19 +11,12 @@ recoloring, renamed to the *-symbolic.svg convention; the ankh is rotated
   ankh-symbolic.svg          — Lorc        (ankh)
   scarab-symbolic.svg        — Lorc        (scarab-beetle)
   feather-symbolic.svg       — Lorc        (feather)
-  sun-symbolic.svg           — Lorc        (sun-radiations)
-  eye-of-horus-symbolic.svg  — Delapouite  (eye-of-horus)
-  horus-symbolic.svg         — Delapouite  (horus)
-  obelisk-symbolic.svg       — Delapouite  (obelisk)
   papyrus-symbolic.svg       — Delapouite  (papyrus)
-  pyramids-symbolic.svg      — Delapouite  (egyptian-pyramids)
 
 Authors: Lorc & Delapouite — https://game-icons.net
 
 --- added in Egyptology-review pass ---
   pen-symbolic.svg           — Lorc  (fountain-pen)   CC BY 3.0
-  winged-sun-symbolic.svg    — original work, hand-authored for this project
-                               (winged sun-disk / Behdety), released CC0.
 
 --- added in delete-glyph pass ---
   blade-symbolic.svg   — Lorc (curvy-knife)  CC BY 3.0  [per-task delete: flint des-blade]

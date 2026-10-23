@@ -30,5 +30,6 @@ Authors: Lorc & Delapouite — https://game-icons.net
 --- Chrome extension (chrome/) ---
   chrome/glyphs.js      — the glyphs above as inline SVG (same sources and
                           licences).
-  chrome/icons/*.png    — original work (the panel ankh in gold on a lapis
-                          tile), released CC0.
+  chrome/icons/          — original work, released CC0: ankhdo.svg (source)
+                           draws the large icon (48/128 px); 16/32 px use the
+                           pixel-grid panel ankh. Gold on a lapis tile.

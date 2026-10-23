@@ -30,6 +30,12 @@ Authors: Lorc & Delapouite — https://game-icons.net
   sunset-symbolic.svg  — Delapouite (sunset)  CC BY 3.0 [clear-completed: going to the West]
 
 --- added in Ankh Do redesign ---
-  cartouche-check-symbolic.svg — original work (cartouche bearing a check
-                                 mark; panel indicator), released CC0.
+  ankh-panel-symbolic.svg      — original work: an ankh drawn on the 16px
+                                 grid for the top bar, released CC0.
   grip-symbolic.svg            — original work (drag grip), released CC0.
+
+--- Chrome extension (chrome/) ---
+  chrome/glyphs.js      — the glyphs above as inline SVG (same sources and
+                          licences).
+  chrome/icons/*.png    — original work (the panel ankh in gold on a lapis
+                          tile), released CC0.

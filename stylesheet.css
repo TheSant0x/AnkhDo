@@ -3,7 +3,7 @@
  * text, ~10% accents. Colour marks state; everything at rest is neutral.
  * Each accent is a material the Egyptians used, given the matching job:
  *   gold       #E8C56A  the gods' flesh      → brand (ankh + title)
- *   turquoise  #45C4B0  Hathor's faience     → panel · running task
+ *   turquoise  #45C4B0  Hathor's faience     → running task
  *   lapis      #6F9AE0  the gods' hair, sky  → header count · add field · copy · drag
  *   malachite  #5FB98A  wadj: life, renewal  → the done seal
  *   silver     #C3CCE0  Thoth's moon (scribe)→ edit
@@ -14,43 +14,16 @@
  * Accents on buttons appear only on hover, where the action is about to happen.
  */
 
-/* ── Panel ────────────────────────────────────────────────────────── */
-/* Drop the shell's square-ish button highlight; the round pill shows state. */
-#panel .panel-button.gnome-todo-panel-button,
-#panel .panel-button.gnome-todo-panel-button:hover,
-#panel .panel-button.gnome-todo-panel-button:active,
-#panel .panel-button.gnome-todo-panel-button:checked,
-#panel .panel-button.gnome-todo-panel-button:focus,
-#panel .panel-button.gnome-todo-panel-button:overview {
-    background-color: transparent;
-    box-shadow: none;
-}
-
+/* ── Panel ──────────────────────────────────────────────────────── */
+/* Native, like the system indicators: a crisp white symbolic ankh and the
+   count in the panel's own colour and font; the shell draws hover/active. */
 .gnome-todo-panel-pill {
-    spacing: 5px;
-    padding: 2px 9px 2px 7px;
-    border-radius: 99px;
-    background-color: rgba(69, 196, 176, 0.14);
-    transition-duration: 150ms;
-}
-
-.gnome-todo-panel-button:hover .gnome-todo-panel-pill {
-    background-color: rgba(69, 196, 176, 0.26);
-}
-
-.gnome-todo-panel-button:checked .gnome-todo-panel-pill,
-.gnome-todo-panel-button:active .gnome-todo-panel-pill {
-    background-color: rgba(69, 196, 176, 0.34);
-}
-
-.gnome-todo-panel-icon {
-    color: #45C4B0;
+    spacing: 6px;
 }
 
 .gnome-todo-panel-count {
-    font-size: 12px;
-    font-weight: 800;
-    color: #EAD9B0;
+    font-weight: bold;
+    font-feature-settings: "tnum";
 }
 
 /* ── Header ───────────────────────────────────────────────────────── */

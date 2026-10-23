@@ -15,7 +15,7 @@ import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 const C = {
     gold:       '#E8C56A',   // treasure gold — brand (ankh + title) only
     lapis:      '#6F9AE0',   // lapis lazuli — copy, add field, header
-    turquoise:  '#45C4B0',   // faience turquoise — panel, open seals
+    turquoise:  '#45C4B0',   // faience turquoise — the running task
     malachite:  '#5FB98A',   // malachite green — done / running
     carnelian:  '#E0654B',   // carnelian red — delete
     silver:     '#C3CCE0',   // Thoth's moon silver — edit
@@ -143,7 +143,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             style_class: 'gnome-todo-panel-pill',
             y_align: Clutter.ActorAlign.CENTER,
         });
-        panelBox.add_child(glyph(ext, 'cartouche-check', 16, 'gnome-todo-panel-icon'));
+        panelBox.add_child(glyph(ext, 'ankh-panel', 16, 'gnome-todo-panel-icon'));
         this._panelCount = new St.Label({
             text: '',
             y_align: Clutter.ActorAlign.CENTER,
@@ -166,7 +166,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this.menu.actor.style = `min-width:${MENU_WIDTH}px;`;
         this.menu.box.style = `width:${MENU_WIDTH}px;${menuBg}`;
 
-        // ── Header cartouche (sun emblem · title · remaining count) ──────
+        // ── Header (ankh · title · remaining count) ──────────────────────
         const headerItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
         headerItem.remove_style_class_name('popup-menu-item');
         headerItem.style = 'padding:0;';

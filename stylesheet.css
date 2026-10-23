@@ -26,6 +26,14 @@
     font-feature-settings: "tnum";
 }
 
+/* ── Menu frame ───────────────────────────────────────────────────── */
+/* No shell drop shadow: it is drawn square behind our rounded menu and
+   reads as a dark frame around it. */
+.popup-menu-boxpointer.gnome-todo-menu,
+.gnome-todo-menu .popup-menu-content {
+    box-shadow: none;
+}
+
 /* ── Header ───────────────────────────────────────────────────────── */
 .gnome-todo-header {
     padding: 12px 16px 10px 16px;

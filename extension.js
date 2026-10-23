@@ -164,6 +164,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             'background-gradient-end:#10131F;' +
             'border-color:rgba(111,154,224,0.28);';
         this.menu.actor.style = `min-width:${MENU_WIDTH}px;`;
+        this.menu.actor.add_style_class_name('gnome-todo-menu');
         this.menu.box.style = `width:${MENU_WIDTH}px;${menuBg}`;
 
         // ── Header (ankh · title · remaining count) ──────────────────────

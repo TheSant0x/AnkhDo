@@ -5,7 +5,8 @@ game-icons.net and are licensed under Creative Commons BY 3.0.
 https://creativecommons.org/licenses/by/3.0/
 
 Modifications: opaque background removed, recolored for GNOME symbolic
-recoloring, renamed to the *-symbolic.svg convention.
+recoloring, renamed to the *-symbolic.svg convention; the ankh is rotated
+45° (and scaled to fit) so it stands upright.
 
   ankh-symbolic.svg          — Lorc        (ankh)
   scarab-symbolic.svg        — Lorc        (scarab-beetle)
@@ -27,3 +28,8 @@ Authors: Lorc & Delapouite — https://game-icons.net
 --- added in delete-glyph pass ---
   blade-symbolic.svg   — Lorc (curvy-knife)  CC BY 3.0  [per-task delete: flint des-blade]
   sunset-symbolic.svg  — Delapouite (sunset)  CC BY 3.0 [clear-completed: going to the West]
+
+--- added in Ankh Do redesign ---
+  cartouche-check-symbolic.svg — original work (cartouche bearing a check
+                                 mark; panel indicator), released CC0.
+  grip-symbolic.svg            — original work (drag grip), released CC0.

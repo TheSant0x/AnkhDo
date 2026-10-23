@@ -1,37 +1,61 @@
-/* Scroll of Deeds — Pharaonic theme
- * Palette: tomb-black ground · treasure gold · lapis lazuli · malachite
- * green · carnelian red · papyrus cream.
+/* Ankh Do — Pharaonic theme
+ * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
+ * text, ~10% accents. Each accent is a material the Egyptians used, given
+ * the job that matches what it meant to them:
+ *   gold       #E8C56A  the gods' flesh      → brand (ankh + title)
+ *   turquoise  #45C4B0  Hathor's faience     → panel indicator · open seals
+ *   lapis      #6F9AE0  the gods' hair, sky  → header count · add field · copy · drag
+ *   malachite  #5FB98A  wadj: life, renewal  → done · running timer
+ *   silver     #C3CCE0  Thoth's moon (scribe)→ edit
+ *   carnelian  #E0654B  desher: chaos        → delete
+ *   ochre      #E89A4F  sunset in the West   → clear completed
+ *   cream      #EAD9B0  papyrus              → text
  */
 
 /* ── Panel ────────────────────────────────────────────────────────── */
-.gnome-todo-panel-button:hover,
-.gnome-todo-panel-button:active {
-    background-color: rgba(232, 197, 106, 0.10);
-    border-radius: 8px;
+/* Drop the shell's square-ish button highlight; the round pill shows state. */
+#panel .panel-button.gnome-todo-panel-button,
+#panel .panel-button.gnome-todo-panel-button:hover,
+#panel .panel-button.gnome-todo-panel-button:active,
+#panel .panel-button.gnome-todo-panel-button:checked,
+#panel .panel-button.gnome-todo-panel-button:focus,
+#panel .panel-button.gnome-todo-panel-button:overview {
+    background-color: transparent;
+    box-shadow: none;
 }
 
-.gnome-todo-panel-ankh {
-    color: #E8C56A;
+.gnome-todo-panel-pill {
+    spacing: 5px;
+    padding: 2px 9px 2px 7px;
+    border-radius: 99px;
+    background-color: rgba(69, 196, 176, 0.14);
+    transition-duration: 150ms;
+}
+
+.gnome-todo-panel-button:hover .gnome-todo-panel-pill {
+    background-color: rgba(69, 196, 176, 0.26);
+}
+
+.gnome-todo-panel-button:checked .gnome-todo-panel-pill,
+.gnome-todo-panel-button:active .gnome-todo-panel-pill {
+    background-color: rgba(69, 196, 176, 0.34);
+}
+
+.gnome-todo-panel-icon {
+    color: #45C4B0;
 }
 
 .gnome-todo-panel-count {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
-    color: #E8C56A;
-    font-family: sans-serif;
-    background-color: rgba(232, 197, 106, 0.15);
-    border: 1px solid rgba(201, 162, 39, 0.30);
-    border-radius: 8px;
-    padding: 1px 7px;
-    min-width: 10px;
-    text-align: center;
+    color: #EAD9B0;
 }
 
-/* ── Header cartouche ─────────────────────────────────────────────── */
+/* ── Header ───────────────────────────────────────────────────────── */
 .gnome-todo-header {
     padding: 12px 16px 10px 16px;
     spacing: 9px;
-    border-bottom: 1px solid rgba(201, 162, 39, 0.30);
+    border-bottom: 1px solid rgba(111, 154, 224, 0.22);
 }
 
 .gnome-todo-header-emblem {
@@ -45,18 +69,18 @@
 }
 
 .gnome-todo-header-count {
-    color: #E8C56A;
+    color: #9DBEF0;
     font-size: 11px;
     font-weight: 700;
-    background-color: rgba(232, 197, 106, 0.12);
-    border: 1px solid rgba(201, 162, 39, 0.30);
+    background-color: rgba(111, 154, 224, 0.14);
+    border: 1px solid rgba(111, 154, 224, 0.32);
     border-radius: 9px;
     padding: 2px 10px;
 }
 
 /* ── Empty state ──────────────────────────────────────────────────── */
 .gnome-todo-empty-glyph {
-    color: #C9A227;
+    color: #5FB98A;
 }
 
 .gnome-todo-empty-title {
@@ -68,13 +92,16 @@
 
 .gnome-todo-empty-hint {
     font-size: 12px;
-    color: #7D6F52;
+    color: #8790AE;
     padding-top: 4px;
 }
 
 /* ── Task rows ────────────────────────────────────────────────────── */
 .gnome-todo-task-layout {
     spacing: 8px;
+    /* Fixed to the icon-button height so revealing the hover controls never
+       changes the row height (that shifted rows under the pointer → jitter). */
+    min-height: 28px;
 }
 
 .gnome-todo-row {
@@ -83,23 +110,39 @@
 }
 
 .gnome-todo-row:hover {
-    background-color: rgba(232, 197, 106, 0.06);
+    background-color: rgba(234, 217, 176, 0.06);
 }
 
 .gnome-todo-row-running {
-    background-color: rgba(232, 197, 106, 0.05);
+    background-color: rgba(95, 185, 138, 0.08);
 }
 
 .gnome-todo-row-running:hover {
-    background-color: rgba(232, 197, 106, 0.11);
+    background-color: rgba(95, 185, 138, 0.14);
 }
 
 .gnome-todo-row-done {
-    background-color: rgba(62, 136, 98, 0.09);
+    background-color: rgba(95, 185, 138, 0.06);
 }
 
 .gnome-todo-row-done:hover {
-    background-color: rgba(62, 136, 98, 0.16);
+    background-color: rgba(95, 185, 138, 0.12);
+}
+
+.gnome-todo-row:focus {
+    background-color: rgba(234, 217, 176, 0.06);
+}
+
+.gnome-todo-kbd-nav .gnome-todo-row:focus {
+    box-shadow: inset 0 0 0 1px rgba(111, 154, 224, 0.65);
+}
+
+.gnome-todo-grip {
+    color: #8790AE;
+}
+
+.gnome-todo-grip:hover {
+    color: #C3CCE0;
 }
 
 /* ── Title ────────────────────────────────────────────────────────── */
@@ -111,13 +154,12 @@
 }
 
 .gnome-todo-title-done {
-    color: #4E9C77;
+    color: #5FB98A;
 }
 
-/* ── Checkbox ─────────────────────────────────────────────────────── */
-/* A round seal (matches the Chrome popup): a gold hairline ring when open, a
-   solid malachite disc with a cream Feather of Ma'at when done. padding:0
-   keeps it a true circle, not a stretched box, around the glyph. */
+/* ── Checkbox (a round seal) ──────────────────────────────────────── */
+/* Open: a turquoise faience ring. Done: a solid malachite disc bearing the
+   Feather of Ma'at. padding:0 keeps it a true circle around the glyph. */
 .gnome-todo-checkbox {
     width: 22px;
     height: 22px;
@@ -125,27 +167,26 @@
     min-height: 22px;
     padding: 0;
     border-radius: 11px;
-    border: 2px solid #C9A227;
-    background-color: rgba(232, 197, 106, 0.05);
+    border: 2px solid #45C4B0;
+    background-color: rgba(69, 196, 176, 0.06);
     transition-duration: 150ms;
 }
 
 .gnome-todo-checkbox:hover {
-    border-color: #E8C56A;
-    background-color: rgba(232, 197, 106, 0.14);
+    border-color: #6FDCCB;
+    background-color: rgba(69, 196, 176, 0.18);
 }
 
 .gnome-todo-checkbox-done {
-    border: 2px solid #3E8862;
-    background-color: #3E8862;
+    border: 2px solid #4FA678;
+    background-color: #4FA678;
 }
 
 .gnome-todo-checkbox-done:hover {
-    border-color: #4E9C77;
-    background-color: #4E9C77;
+    border-color: #5FB98A;
+    background-color: #5FB98A;
 }
 
-/* Feather of Ma'at inside the done seal (cream; gold if unrecolored). */
 .gnome-todo-check-feather {
     color: #F6EAC8;
 }
@@ -154,13 +195,13 @@
 .gnome-todo-timer-label {
     font-size: 11px;
     font-weight: 700;
-    color: #7D6F52;
+    color: #8790AE;
     min-width: 58px;
     text-align: right;
 }
 
 .gnome-todo-timer-label-active {
-    color: #4E9C77;
+    color: #5FB98A;
 }
 
 /* ── Icon buttons ─────────────────────────────────────────────────── */
@@ -178,97 +219,85 @@
 /* Copy — lapis lazuli */
 .gnome-todo-row .gnome-todo-icon-copy {
     color: #6F9AE0;
-    background-color: rgba(111, 154, 224, 0.12);
+    background-color: rgba(111, 154, 224, 0.13);
 }
 
 .gnome-todo-row .gnome-todo-icon-copy:hover {
     color: #9DBEF0;
-    background-color: rgba(111, 154, 224, 0.24);
+    background-color: rgba(111, 154, 224, 0.26);
 }
 
-/* Copy success feedback — malachite */
+/* Copy success — malachite */
 .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied,
 .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied:hover {
-    color: #4E9C77;
-    background-color: rgba(62, 136, 98, 0.24);
+    color: #5FB98A;
+    background-color: rgba(95, 185, 138, 0.24);
 }
 
-/* Edit — treasure gold (scribe's feather) */
+/* Edit — silver (Thoth, moon god and patron of scribes) */
 .gnome-todo-row .gnome-todo-icon-edit {
-    color: #E8C56A;
-    background-color: rgba(232, 197, 106, 0.12);
+    color: #C3CCE0;
+    background-color: rgba(195, 204, 224, 0.12);
 }
 
 .gnome-todo-row .gnome-todo-icon-edit:hover {
-    color: #F0D488;
-    background-color: rgba(232, 197, 106, 0.24);
+    color: #E4E9F4;
+    background-color: rgba(195, 204, 224, 0.24);
 }
 
 /* Delete — carnelian */
 .gnome-todo-row .gnome-todo-icon-delete {
     color: #E0654B;
-    background-color: rgba(224, 101, 75, 0.12);
+    background-color: rgba(224, 101, 75, 0.13);
 }
 
 .gnome-todo-row .gnome-todo-icon-delete:hover {
     color: #F08063;
-    background-color: rgba(224, 101, 75, 0.24);
+    background-color: rgba(224, 101, 75, 0.26);
 }
 
 /* Timer — idle */
 .gnome-todo-row .gnome-todo-icon-timer {
-    color: #7D6F52;
-    background-color: rgba(125, 111, 82, 0.14);
+    color: #8790AE;
+    background-color: rgba(135, 144, 174, 0.14);
 }
 
 .gnome-todo-row .gnome-todo-icon-timer:hover {
-    color: #4E9C77;
-    background-color: rgba(62, 136, 98, 0.18);
+    color: #5FB98A;
+    background-color: rgba(95, 185, 138, 0.20);
 }
 
 /* Timer — running */
 .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active {
-    color: #4E9C77;
-    background-color: rgba(62, 136, 98, 0.16);
+    color: #5FB98A;
+    background-color: rgba(95, 185, 138, 0.18);
 }
 
 .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active:hover {
-    color: #63B98C;
-    background-color: rgba(62, 136, 98, 0.26);
+    color: #7FD3A6;
+    background-color: rgba(95, 185, 138, 0.28);
 }
 
-/* ── Reorder arrows ───────────────────────────────────────────────── */
-.gnome-todo-reorder-btn {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
-    min-height: 20px;
-    padding: 0;
-    border: none;
-    border-radius: 6px;
-    color: #B7A582;
-    background-color: rgba(232, 197, 106, 0.05);
-    transition-duration: 150ms;
-}
-
-.gnome-todo-reorder-btn:hover {
-    color: #E8C56A;
-    background-color: rgba(232, 197, 106, 0.16);
-}
-
-.gnome-todo-reorder-disabled {
-    color: #4F4A38;
-    background-color: transparent;
+/* ── Drag to reorder ─────────────────────────────────────────────── */
+/* Two classes so it beats .gnome-todo-row:hover/:focus whatever the pointer
+   does mid-drag. Inset outline, not a border: the row's size must not change
+   (the floating clone was sized from it). */
+.gnome-todo-row.gnome-todo-row-dragging,
+.gnome-todo-row.gnome-todo-row-dragging:hover,
+.gnome-todo-row.gnome-todo-row-dragging:focus {
+    background-color: #222A45;
+    box-shadow: inset 0 0 0 1px rgba(111, 154, 224, 0.70);
 }
 
 /* ── Input area (add task) ────────────────────────────────────────── */
+/* The scarab in lapis, as in royal jewellery. */
 .gnome-todo-add-scarab {
-    color: #E8C56A;
+    color: #6F9AE0;
 }
 
 .gnome-todo-input-shell {
-    background-color: #1E160D;
-    border: 1px solid rgba(201, 162, 39, 0.35);
+    background-color: #1C2136;
+    border: 1px solid rgba(111, 154, 224, 0.30);
     border-radius: 10px;
     padding: 8px 12px;
     spacing: 8px;
@@ -276,8 +305,8 @@
 }
 
 .gnome-todo-input-shell:hover {
-    border-color: rgba(232, 197, 106, 0.60);
-    background-color: #241A10;
+    border-color: rgba(111, 154, 224, 0.60);
+    background-color: #20263D;
 }
 
 .gnome-todo-entry {
@@ -294,41 +323,41 @@
     box-shadow: none;
 }
 
-/* ── Edit-in-place row ────────────────────────────────────────────── */
+/* ── Edit-in-place row (silver, matching the edit button) ─────────── */
 .gnome-todo-edit-shell {
-    background-color: rgba(111, 154, 224, 0.06);
+    background-color: rgba(195, 204, 224, 0.06);
     border-radius: 10px;
 }
 
 /* Scoped + focus-covered so the shell's default StEntry:focus can't win. */
 .gnome-todo-edit-shell .gnome-todo-edit-entry,
 .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
-    background-color: #1E160D;
-    border: 1px solid rgba(111, 154, 224, 0.55);
+    background-color: #1C2136;
+    border: 1px solid rgba(195, 204, 224, 0.45);
     border-radius: 8px;
     padding: 7px 11px;
     font-size: 13px;
     font-weight: 600;
     color: #EAD9B0;
     box-shadow: none;
-    selection-background-color: rgba(111, 154, 224, 0.45);
+    selection-background-color: rgba(195, 204, 224, 0.35);
     selected-color: #F4ECD8;
 }
 
 .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
-    border-color: #6F9AE0;
+    border-color: #C3CCE0;
 }
 
 .gnome-todo-edit-shell .gnome-todo-edit-entry StLabel {
-    color: #7D6F52;
+    color: #8790AE;
 }
 
 /* ── Buttons: seal / cancel / clear / confirm ─────────────────────── */
 .gnome-todo-save-btn {
     font-size: 12px;
     font-weight: 700;
-    color: #12100A;
-    background-color: #E8C56A;
+    color: #151A2B;
+    background-color: #C3CCE0;
     border: none;
     border-radius: 8px;
     padding: 6px 16px;
@@ -337,13 +366,13 @@
 }
 
 .gnome-todo-save-btn:hover {
-    background-color: #F0D488;
+    background-color: #DDE3F0;
 }
 
 .gnome-todo-cancel-btn {
     font-size: 12px;
     font-weight: 700;
-    color: #B7A582;
+    color: #A3ABC6;
     background: none;
     border: none;
     padding: 6px 12px;
@@ -353,39 +382,38 @@
 
 .gnome-todo-cancel-btn:hover {
     color: #EAD9B0;
-    background-color: rgba(232, 197, 106, 0.08);
+    background-color: rgba(234, 217, 176, 0.08);
 }
 
-/* Clear-completed pill: a warm "send to the West" (sunset) + count of deeds.
-   Gold, not carnelian — retiring finished deeds is an honourable passage. */
+/* Clear-completed pill: sunset ochre — sending finished deeds to the West. */
 .gnome-todo-clear-btn {
     height: 38px;
     min-height: 38px;
     padding: 0 12px;
     margin-left: 8px;
     border-radius: 10px;
-    color: #E8C56A;
-    background-color: rgba(232, 197, 106, 0.12);
-    border: 1px solid rgba(201, 162, 39, 0.30);
+    color: #E89A4F;
+    background-color: rgba(232, 154, 79, 0.13);
+    border: 1px solid rgba(232, 154, 79, 0.32);
     transition-duration: 150ms;
 }
 
 .gnome-todo-clear-btn:hover {
-    color: #F0D488;
-    background-color: rgba(232, 197, 106, 0.22);
-    border-color: rgba(232, 197, 106, 0.55);
+    color: #F2B57A;
+    background-color: rgba(232, 154, 79, 0.24);
+    border-color: rgba(232, 154, 79, 0.60);
 }
 
 .gnome-todo-clear-count {
     font-size: 12px;
     font-weight: 800;
-    color: #E8C56A;
+    color: #E89A4F;
 }
 
-/* ── Clear-completed confirmation card (a warm send-off, not a delete) ── */
+/* ── Clear-completed confirmation card (sunset) ───────────────────── */
 .gnome-todo-confirm-shell {
-    background-color: rgba(232, 197, 106, 0.07);
-    border: 1px solid rgba(201, 162, 39, 0.30);
+    background-color: rgba(232, 154, 79, 0.08);
+    border: 1px solid rgba(232, 154, 79, 0.32);
     border-radius: 12px;
     padding: 14px 14px;
 }
@@ -396,8 +424,8 @@
     min-width: 38px;
     min-height: 38px;
     border-radius: 10px;
-    color: #E8C56A;
-    background-color: rgba(232, 197, 106, 0.16);
+    color: #E89A4F;
+    background-color: rgba(232, 154, 79, 0.18);
 }
 
 .gnome-todo-confirm-title {
@@ -408,15 +436,15 @@
 
 .gnome-todo-confirm-sub {
     font-size: 12px;
-    color: #B7A582;
+    color: #A3ABC6;
     padding-top: 2px;
 }
 
 .gnome-todo-confirm-remove {
     font-size: 12.5px;
     font-weight: 700;
-    color: #12100A;
-    background-color: #E8C56A;
+    color: #2A1606;
+    background-color: #E89A4F;
     border: none;
     border-radius: 9px;
     padding: 7px 18px;
@@ -424,13 +452,43 @@
 }
 
 .gnome-todo-confirm-remove:hover {
-    background-color: #F0D488;
+    background-color: #F2B57A;
+}
+
+/* ── Undo bar (after deleting a task) ─────────────────────────────── */
+.gnome-todo-undo-shell {
+    background-color: rgba(234, 217, 176, 0.05);
+    border: 1px solid rgba(234, 217, 176, 0.12);
+    border-radius: 10px;
+    padding: 5px 6px 5px 14px;
+    spacing: 10px;
+}
+
+.gnome-todo-undo-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #A3ABC6;
+}
+
+.gnome-todo-undo-btn {
+    font-size: 12px;
+    font-weight: 800;
+    color: #9DBEF0;
+    background-color: rgba(111, 154, 224, 0.16);
+    border-radius: 8px;
+    padding: 5px 14px;
+    transition-duration: 150ms;
+}
+
+.gnome-todo-undo-btn:hover {
+    color: #C4D8F7;
+    background-color: rgba(111, 154, 224, 0.30);
 }
 
 /* ── Full-text tooltip (shown on hover when a title is truncated) ──── */
 .gnome-todo-tooltip {
-    background-color: #1E160D;
-    border: 1px solid rgba(201, 162, 39, 0.45);
+    background-color: #1C2136;
+    border: 1px solid rgba(111, 154, 224, 0.45);
     border-radius: 8px;
     padding: 6px 10px;
     color: #EAD9B0;
@@ -443,5 +501,5 @@
 /* Sunset glyph in the clear-completed pill and confirmation medallion. */
 .gnome-todo-clear-glyph,
 .gnome-todo-confirm-glyph {
-    color: #E8C56A;
+    color: #E89A4F;
 }

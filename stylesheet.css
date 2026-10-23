@@ -282,8 +282,13 @@
     font-weight: 600;
 }
 
-.gnome-todo-entry:focus {
-    background: none;
+/* Scoped to the shell and all states, so the theme's own entry background
+   (lighter, and more specific inside menus) never shows through. */
+.gnome-todo-input-shell .gnome-todo-entry,
+.gnome-todo-input-shell .gnome-todo-entry:hover,
+.gnome-todo-input-shell .gnome-todo-entry:focus,
+.gnome-todo-input-shell .gnome-todo-entry:active {
+    background-color: transparent;
     border: none;
     box-shadow: none;
 }

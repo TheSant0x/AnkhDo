@@ -282,15 +282,21 @@
     font-weight: 600;
 }
 
-/* Scoped to the shell and all states, so the theme's own entry background
-   (lighter, and more specific inside menus) never shows through. */
+/* Other extensions restyle every StEntry inside popups with !important
+   (Blur my Shell gives them a lighter box and white text), so our fields
+   must use !important too, in every state. */
 .gnome-todo-input-shell .gnome-todo-entry,
 .gnome-todo-input-shell .gnome-todo-entry:hover,
 .gnome-todo-input-shell .gnome-todo-entry:focus,
 .gnome-todo-input-shell .gnome-todo-entry:active {
-    background-color: transparent;
-    border: none;
-    box-shadow: none;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #EAD9B0 !important;
+}
+
+.gnome-todo-input-shell .gnome-todo-entry StLabel.hint-text {
+    color: #8790AE !important;
 }
 
 /* ── Edit-in-place row (silver, matching the edit button) ─────────── */
@@ -299,27 +305,27 @@
     border-radius: 10px;
 }
 
-/* Scoped + focus-covered so the shell's default StEntry:focus can't win. */
 .gnome-todo-edit-shell .gnome-todo-edit-entry,
+.gnome-todo-edit-shell .gnome-todo-edit-entry:hover,
 .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
-    background-color: #1C2136;
-    border: 1px solid rgba(195, 204, 224, 0.45);
+    background-color: #1C2136 !important;
+    border: 1px solid rgba(195, 204, 224, 0.45) !important;
     border-radius: 8px;
     padding: 7px 11px;
     font-size: 13px;
     font-weight: 600;
-    color: #EAD9B0;
-    box-shadow: none;
+    color: #EAD9B0 !important;
+    box-shadow: none !important;
     selection-background-color: rgba(195, 204, 224, 0.35);
     selected-color: #F4ECD8;
 }
 
 .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
-    border-color: #C3CCE0;
+    border-color: #C3CCE0 !important;
 }
 
-.gnome-todo-edit-shell .gnome-todo-edit-entry StLabel {
-    color: #8790AE;
+.gnome-todo-edit-shell .gnome-todo-edit-entry StLabel.hint-text {
+    color: #8790AE !important;
 }
 
 /* ── Buttons: seal / cancel / clear / confirm ─────────────────────── */

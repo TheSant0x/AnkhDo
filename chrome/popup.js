@@ -38,6 +38,19 @@ function normalize(arr) {
   }));
 }
 
+// ── Theme (chosen on the options page) ────────────────────────────────────
+const applyTheme = light => document.body.classList.toggle('light', !!light);
+async function loadTheme() {
+  try {
+    if (globalThis.chrome?.storage?.local)
+      return !!(await chrome.storage.local.get('lightTheme')).lightTheme;
+  } catch {}
+  try { return localStorage.getItem('lightTheme') === 'true'; } catch { return false; }
+}
+globalThis.chrome?.storage?.onChanged?.addListener((changes, area) => {
+  if (area === 'local' && changes.lightTheme) applyTheme(changes.lightTheme.newValue);
+});
+
 // ── Time helpers ─────────────────────────────────────────────────────────
 const liveElapsed = t =>
   t.running && t.startedAt ? t.elapsedSeconds + Math.floor((Date.now() - t.startedAt) / 1000)
@@ -437,6 +450,8 @@ setInterval(() => {
 
 // ── Boot ─────────────────────────────────────────────────────────────────
 (async () => {
-  tasks = await store.load();
+  const [loaded, light] = await Promise.all([store.load(), loadTheme()]);
+  tasks = loaded;
+  applyTheme(light);
   render();
 })();

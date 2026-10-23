@@ -211,3 +211,55 @@ body.dragging, body.dragging *{cursor:grabbing !important}
 .confirm .actions{display:flex; justify-content:flex-end; gap:8px; padding-top:12px}
 .btn.send{font-size:12.5px; color:#2A1606; background:var(--ochre); padding:7px 18px; border-radius:9px}
 .btn.send:hover{background:var(--ochre-hi)}
+
+/* ══════════════════════════════════════════════════════════
+   Off-white theme (Options → "Off-white theme")
+   Same palette as the GNOME extension: papyrus ground, ink text, accents in
+   deeper shades (text ≥ 4.5:1, controls ≥ 3:1).
+   ══════════════════════════════════════════════════════════ */
+body.light{
+  --bg-top:#FBF7EE; --bg-bottom:#F2EBDC; --surface:#FFFDF8; --surface-hi:#FFFFFF;
+  --gold:#8A6510;
+  --turquoise:#0A7368; --turquoise-hi:#075C53;
+  --lapis:#2C5BAA; --lapis-hi:#224A8C;
+  --malachite:#2E7D4F; --seal:#2E7D4F;
+  --silver:#4A5368; --carnelian:#B23A22; --carnelian-hi:#9A3019;
+  --ochre:#A9550F; --ochre-hi:#8E470C;
+  --cream:#2B2418;
+  --ring:#8F846E; --slate:#6A6252; --muted:#736A58; --done-text:#8E8573;
+}
+body.light .header{border-bottom-color:rgba(43,36,24,.10)}
+body.light .header-count{background:rgba(44,91,170,.09); border-color:rgba(44,91,170,.25)}
+body.light .list::-webkit-scrollbar-thumb{background:rgba(43,36,24,.18)}
+body.light .row:hover, body.light .row:focus{background:rgba(43,36,24,.05)}
+body.light .row:focus-visible{box-shadow:inset 0 0 0 1px rgba(44,91,170,.55)}
+body.light .row.running{background:rgba(10,115,104,.08)}
+body.light .row.running:hover{background:rgba(10,115,104,.13)}
+body.light .row.dragging{background:#FFFDF8; box-shadow:inset 0 0 0 1px rgba(44,91,170,.55)}
+body.light .chk:hover{background:rgba(10,115,104,.10)}
+body.light .row.done .chk .icon{color:#FFF8E8}
+body.light .row.done .title{text-decoration-color:rgba(142,133,115,.8)}
+body.light .ibtn.copy:hover{background:rgba(44,91,170,.12)}
+body.light .ibtn.copy.copied, body.light .ibtn.copy.copied:hover{background:rgba(46,125,79,.14)}
+body.light .ibtn.edit:hover{color:#2B2418; background:rgba(74,83,104,.12)}
+body.light .ibtn.del:hover{background:rgba(178,58,34,.11)}
+body.light .ibtn.timer-btn:hover{background:rgba(10,115,104,.11)}
+body.light .row.running .ibtn.timer-btn{background:rgba(10,115,104,.10)}
+body.light .row.running .ibtn.timer-btn:hover{background:rgba(10,115,104,.18)}
+body.light .sep{background:rgba(43,36,24,.12)}
+body.light .undo{background:rgba(43,36,24,.04); border-color:rgba(43,36,24,.10)}
+body.light .btn.undo-btn{background:rgba(44,91,170,.10)}
+body.light .btn.undo-btn:hover{color:#224A8C; background:rgba(44,91,170,.20)}
+body.light .input-shell{border-color:rgba(44,91,170,.25)}
+body.light .input-shell:hover{border-color:rgba(44,91,170,.45)}
+body.light .clear-btn{background:rgba(43,36,24,.03); border-color:rgba(43,36,24,.12)}
+body.light .clear-btn:hover{background:rgba(169,85,15,.10); border-color:rgba(169,85,15,.40)}
+body.light .edit-shell{background:rgba(74,83,104,.06)}
+body.light .edit-shell input{border-color:rgba(74,83,104,.35)}
+body.light .edit-shell input::selection{background:rgba(44,91,170,.25); color:#2B2418}
+body.light .btn.seal{color:#FFFFFF}
+body.light .btn.seal:hover{background:#3A4256}
+body.light .btn.ghost:hover{background:rgba(43,36,24,.06)}
+body.light .confirm{background:rgba(169,85,15,.06); border-color:rgba(169,85,15,.28)}
+body.light .confirm .medallion{background:rgba(169,85,15,.12)}
+body.light .btn.send{color:#FFFFFF}

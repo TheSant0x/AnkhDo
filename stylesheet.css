@@ -17,11 +17,11 @@
 /* ── Panel ──────────────────────────────────────────────────────── */
 /* Native, like the system indicators: a crisp white symbolic ankh and the
    count in the panel's own colour and font; the shell draws hover/active. */
-.gnome-todo-panel-pill {
+.ankhdo-panel-pill {
     spacing: 6px;
 }
 
-.gnome-todo-panel-count {
+.ankhdo-panel-count {
     font-weight: bold;
     font-feature-settings: "tnum";
 }
@@ -29,29 +29,29 @@
 /* ── Menu frame ───────────────────────────────────────────────────── */
 /* No shell drop shadow: it is drawn square behind our rounded menu and
    reads as a dark frame around it. */
-.popup-menu-boxpointer.gnome-todo-menu,
-.gnome-todo-menu .popup-menu-content {
+.popup-menu-boxpointer.ankhdo-menu,
+.ankhdo-menu .popup-menu-content {
     box-shadow: none;
 }
 
 /* ── Header ───────────────────────────────────────────────────────── */
-.gnome-todo-header {
+.ankhdo-header {
     padding: 12px 16px 10px 16px;
     spacing: 9px;
     border-bottom: 1px solid rgba(111, 154, 224, 0.22);
 }
 
-.gnome-todo-header-emblem {
+.ankhdo-header-emblem {
     color: #E8C56A;
 }
 
-.gnome-todo-header-title {
+.ankhdo-header-title {
     color: #E8C56A;
     font-size: 13px;
     font-weight: 800;
 }
 
-.gnome-todo-header-count {
+.ankhdo-header-count {
     color: #9DBEF0;
     font-size: 11px;
     font-weight: 700;
@@ -62,83 +62,79 @@
 }
 
 /* ── Empty state ──────────────────────────────────────────────────── */
-.gnome-todo-empty-glyph {
+.ankhdo-empty-glyph {
     color: #5FB98A;
 }
 
-.gnome-todo-empty-title {
+.ankhdo-empty-title {
     font-size: 15px;
     font-weight: 700;
     color: #EAD9B0;
     padding-top: 14px;
 }
 
-.gnome-todo-empty-hint {
+.ankhdo-empty-hint {
     font-size: 12px;
     color: #8790AE;
     padding-top: 4px;
 }
 
 /* ── Task rows ────────────────────────────────────────────────────── */
-.gnome-todo-task-layout {
+.ankhdo-task-layout {
     spacing: 8px;
     /* Fixed to the icon-button height so revealing the hover controls never
        changes the row height (that shifted rows under the pointer → jitter). */
     min-height: 28px;
 }
 
-.gnome-todo-row {
+.ankhdo-row {
     border-radius: 10px;
     transition-duration: 150ms;
 }
 
-.gnome-todo-row:hover {
-    background-color: rgba(234, 217, 176, 0.06);
-}
-
-.gnome-todo-row-running {
+.ankhdo-row:hover,
+.ankhdo-row-running {
     background-color: rgba(69, 196, 176, 0.08);
 }
 
-/* Two classes: hovering a menu item also focuses it, and the generic
-   .gnome-todo-row:focus rule would otherwise turn this grey. */
-.gnome-todo-row.gnome-todo-row-running:hover,
-.gnome-todo-row.gnome-todo-row-running:focus {
+/* Two classes so this beats .ankhdo-row:focus (hovering a menu item
+   also focuses it). */
+.ankhdo-row.ankhdo-row-running:hover,
+.ankhdo-row.ankhdo-row-running:focus {
     background-color: rgba(69, 196, 176, 0.14);
 }
 
-.gnome-todo-row:focus {
+.ankhdo-row:focus {
     background-color: rgba(234, 217, 176, 0.06);
 }
 
-.gnome-todo-kbd-nav .gnome-todo-row:focus {
+.ankhdo-kbd-nav .ankhdo-row:focus {
     box-shadow: inset 0 0 0 1px rgba(111, 154, 224, 0.65);
 }
 
-.gnome-todo-grip {
+.ankhdo-grip {
     color: #8790AE;
 }
 
-.gnome-todo-grip:hover {
+.ankhdo-grip:hover {
     color: #C3CCE0;
 }
 
 /* ── Title ────────────────────────────────────────────────────────── */
-.gnome-todo-title {
+.ankhdo-title {
     font-size: 14px;
     font-weight: 600;
     color: #EAD9B0;
     text-align: left;
 }
 
-.gnome-todo-title-done {
+.ankhdo-title-done {
     color: #7A84A3;
 }
 
-/* ── Checkbox (a round seal) ──────────────────────────────────────── */
-/* Open: a quiet slate ring (turquoise on hover). Done: a solid malachite disc
-   bearing the Feather of Ma'at. padding:0 keeps it a true circle. */
-.gnome-todo-checkbox {
+/* ── Checkbox ─────────────────────────────────────────────────────── */
+/* padding: 0 keeps it a true circle around the feather glyph. */
+.ankhdo-checkbox {
     width: 22px;
     height: 22px;
     min-width: 22px;
@@ -150,27 +146,27 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-checkbox:hover {
+.ankhdo-checkbox:hover {
     border-color: #45C4B0;
     background-color: rgba(69, 196, 176, 0.16);
 }
 
-.gnome-todo-checkbox-done {
+.ankhdo-checkbox-done {
     border: 2px solid #4FA678;
     background-color: #4FA678;
 }
 
-.gnome-todo-checkbox-done:hover {
+.ankhdo-checkbox-done:hover {
     border-color: #5FB98A;
     background-color: #5FB98A;
 }
 
-.gnome-todo-check-feather {
+.ankhdo-check-feather {
     color: #F6EAC8;
 }
 
 /* ── Timer label ──────────────────────────────────────────────────── */
-.gnome-todo-timer-label {
+.ankhdo-timer-label {
     font-size: 11px;
     font-weight: 700;
     color: #8790AE;
@@ -178,12 +174,12 @@
     text-align: right;
 }
 
-.gnome-todo-timer-label-active {
+.ankhdo-timer-label-active {
     color: #45C4B0;
 }
 
 /* ── Icon buttons ─────────────────────────────────────────────────── */
-.gnome-todo-icon-btn {
+.ankhdo-icon-btn {
     width: 28px;
     height: 28px;
     min-width: 28px;
@@ -194,73 +190,67 @@
     transition-duration: 150ms;
 }
 
-/* At rest every button is a plain slate icon; each takes its colour only
-   under the pointer. */
-.gnome-todo-row .gnome-todo-icon-btn {
+/* Buttons are slate at rest and take their colour only on hover. */
+.ankhdo-row .ankhdo-icon-btn {
     color: #A3ABC6;
     background-color: transparent;
 }
 
-/* Copy — lapis lazuli */
-.gnome-todo-row .gnome-todo-icon-copy:hover {
+.ankhdo-row .ankhdo-icon-copy:hover {
     color: #9DBEF0;
     background-color: rgba(111, 154, 224, 0.20);
 }
 
-/* Copy success — malachite */
-.gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied,
-.gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied:hover {
+.ankhdo-row .ankhdo-icon-btn.ankhdo-copied,
+.ankhdo-row .ankhdo-icon-btn.ankhdo-copied:hover {
     color: #5FB98A;
     background-color: rgba(95, 185, 138, 0.22);
 }
 
-/* Edit — silver (Thoth, moon god and patron of scribes) */
-.gnome-todo-row .gnome-todo-icon-edit:hover {
+.ankhdo-row .ankhdo-icon-edit:hover {
     color: #EEF1F8;
     background-color: rgba(195, 204, 224, 0.20);
 }
 
-/* Delete — carnelian */
-.gnome-todo-row .gnome-todo-icon-delete:hover {
+.ankhdo-row .ankhdo-icon-delete:hover {
     color: #F08063;
     background-color: rgba(224, 101, 75, 0.20);
 }
 
-/* Timer — starting one turns the task turquoise, so preview that */
-.gnome-todo-row .gnome-todo-icon-timer:hover {
+/* Hovering start previews the running colour. */
+.ankhdo-row .ankhdo-icon-timer:hover {
     color: #6FDCCB;
     background-color: rgba(69, 196, 176, 0.18);
 }
 
-/* Timer — running: a state, so it keeps its colour at rest */
-.gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active {
+/* A running timer is a state, so it keeps its colour at rest. */
+.ankhdo-row .ankhdo-icon-timer.ankhdo-timer-active {
     color: #45C4B0;
     background-color: rgba(69, 196, 176, 0.14);
 }
 
-.gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active:hover {
+.ankhdo-row .ankhdo-icon-timer.ankhdo-timer-active:hover {
     color: #6FDCCB;
     background-color: rgba(69, 196, 176, 0.24);
 }
 
 /* ── Drag to reorder ─────────────────────────────────────────────── */
-/* Two classes so it beats .gnome-todo-row:hover/:focus whatever the pointer
+/* Two classes so it beats .ankhdo-row:hover/:focus whatever the pointer
    does mid-drag. Inset outline, not a border: the row's size must not change
    (the floating clone was sized from it). */
-.gnome-todo-row.gnome-todo-row-dragging,
-.gnome-todo-row.gnome-todo-row-dragging:hover,
-.gnome-todo-row.gnome-todo-row-dragging:focus {
+.ankhdo-row.ankhdo-row-dragging,
+.ankhdo-row.ankhdo-row-dragging:hover,
+.ankhdo-row.ankhdo-row-dragging:focus {
     background-color: #222A45;
     box-shadow: inset 0 0 0 1px rgba(111, 154, 224, 0.70);
 }
 
 /* ── Input area (add task) ────────────────────────────────────────── */
-/* The scarab in lapis, as in royal jewellery. */
-.gnome-todo-add-scarab {
+.ankhdo-add-scarab {
     color: #6F9AE0;
 }
 
-.gnome-todo-input-shell {
+.ankhdo-input-shell {
     background-color: #1C2136;
     border: 1px solid rgba(111, 154, 224, 0.30);
     border-radius: 10px;
@@ -269,15 +259,12 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-input-shell:hover {
+.ankhdo-input-shell:hover {
     border-color: rgba(111, 154, 224, 0.60);
     background-color: #20263D;
 }
 
-.gnome-todo-entry {
-    background: none;
-    border: none;
-    color: #EAD9B0;
+.ankhdo-entry {
     font-size: 13px;
     font-weight: 600;
 }
@@ -285,29 +272,29 @@
 /* Other extensions restyle every StEntry inside popups with !important
    (Blur my Shell gives them a lighter box and white text), so our fields
    must use !important too, in every state. */
-.gnome-todo-input-shell .gnome-todo-entry,
-.gnome-todo-input-shell .gnome-todo-entry:hover,
-.gnome-todo-input-shell .gnome-todo-entry:focus,
-.gnome-todo-input-shell .gnome-todo-entry:active {
+.ankhdo-input-shell .ankhdo-entry,
+.ankhdo-input-shell .ankhdo-entry:hover,
+.ankhdo-input-shell .ankhdo-entry:focus,
+.ankhdo-input-shell .ankhdo-entry:active {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     color: #EAD9B0 !important;
 }
 
-.gnome-todo-input-shell .gnome-todo-entry StLabel.hint-text {
+.ankhdo-input-shell .ankhdo-entry StLabel.hint-text {
     color: #8790AE !important;
 }
 
-/* ── Edit-in-place row (silver, matching the edit button) ─────────── */
-.gnome-todo-edit-shell {
+/* ── Edit-in-place row ────────────────────────────────────────────── */
+.ankhdo-edit-shell {
     background-color: rgba(195, 204, 224, 0.06);
     border-radius: 10px;
 }
 
-.gnome-todo-edit-shell .gnome-todo-edit-entry,
-.gnome-todo-edit-shell .gnome-todo-edit-entry:hover,
-.gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+.ankhdo-edit-shell .ankhdo-edit-entry,
+.ankhdo-edit-shell .ankhdo-edit-entry:hover,
+.ankhdo-edit-shell .ankhdo-edit-entry:focus {
     background-color: #1C2136 !important;
     border: 1px solid rgba(195, 204, 224, 0.45) !important;
     border-radius: 8px;
@@ -320,16 +307,16 @@
     selected-color: #F4ECD8;
 }
 
-.gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+.ankhdo-edit-shell .ankhdo-edit-entry:focus {
     border-color: #C3CCE0 !important;
 }
 
-.gnome-todo-edit-shell .gnome-todo-edit-entry StLabel.hint-text {
+.ankhdo-edit-shell .ankhdo-edit-entry StLabel.hint-text {
     color: #8790AE !important;
 }
 
 /* ── Buttons: seal / cancel / clear / confirm ─────────────────────── */
-.gnome-todo-save-btn {
+.ankhdo-save-btn {
     font-size: 12px;
     font-weight: 700;
     color: #151A2B;
@@ -341,11 +328,11 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-save-btn:hover {
+.ankhdo-save-btn:hover {
     background-color: #DDE3F0;
 }
 
-.gnome-todo-cancel-btn {
+.ankhdo-cancel-btn {
     font-size: 12px;
     font-weight: 700;
     color: #A3ABC6;
@@ -356,13 +343,12 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-cancel-btn:hover {
+.ankhdo-cancel-btn:hover {
     color: #EAD9B0;
     background-color: rgba(234, 217, 176, 0.08);
 }
 
-/* Clear-completed pill: sunset ochre — sending finished deeds to the West. */
-.gnome-todo-clear-btn {
+.ankhdo-clear-btn {
     height: 38px;
     min-height: 38px;
     padding: 0 12px;
@@ -374,31 +360,31 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-clear-btn:hover {
+.ankhdo-clear-btn:hover {
     color: #F2B57A;
     background-color: rgba(232, 154, 79, 0.24);
     border-color: rgba(232, 154, 79, 0.60);
 }
 
-.gnome-todo-clear-count {
+.ankhdo-clear-count {
     font-size: 12px;
     font-weight: 800;
     color: #A3ABC6;
 }
 
-.gnome-todo-clear-btn:hover .gnome-todo-clear-count {
+.ankhdo-clear-btn:hover .ankhdo-clear-count {
     color: #F2B57A;
 }
 
 /* ── Clear-completed confirmation card (sunset) ───────────────────── */
-.gnome-todo-confirm-shell {
+.ankhdo-confirm-shell {
     background-color: rgba(232, 154, 79, 0.08);
     border: 1px solid rgba(232, 154, 79, 0.32);
     border-radius: 12px;
     padding: 14px 14px;
 }
 
-.gnome-todo-confirm-icon {
+.ankhdo-confirm-icon {
     width: 38px;
     height: 38px;
     min-width: 38px;
@@ -408,19 +394,19 @@
     background-color: rgba(232, 154, 79, 0.18);
 }
 
-.gnome-todo-confirm-title {
+.ankhdo-confirm-title {
     font-size: 14px;
     font-weight: 800;
     color: #EAD9B0;
 }
 
-.gnome-todo-confirm-sub {
+.ankhdo-confirm-sub {
     font-size: 12px;
     color: #A3ABC6;
     padding-top: 2px;
 }
 
-.gnome-todo-confirm-remove {
+.ankhdo-confirm-remove {
     font-size: 12.5px;
     font-weight: 700;
     color: #2A1606;
@@ -431,12 +417,12 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-confirm-remove:hover {
+.ankhdo-confirm-remove:hover {
     background-color: #F2B57A;
 }
 
-/* ── Undo bar (after deleting a task) ─────────────────────────────── */
-.gnome-todo-undo-shell {
+/* ── Undo bar ─────────────────────────────────────────────────────── */
+.ankhdo-undo-shell {
     background-color: rgba(234, 217, 176, 0.05);
     border: 1px solid rgba(234, 217, 176, 0.12);
     border-radius: 10px;
@@ -444,13 +430,13 @@
     spacing: 10px;
 }
 
-.gnome-todo-undo-label {
+.ankhdo-undo-label {
     font-size: 12.5px;
     font-weight: 600;
     color: #A3ABC6;
 }
 
-.gnome-todo-undo-btn {
+.ankhdo-undo-btn {
     font-size: 12px;
     font-weight: 800;
     color: #9DBEF0;
@@ -460,13 +446,13 @@
     transition-duration: 150ms;
 }
 
-.gnome-todo-undo-btn:hover {
+.ankhdo-undo-btn:hover {
     color: #C4D8F7;
     background-color: rgba(111, 154, 224, 0.30);
 }
 
-/* ── Full-text tooltip (shown on hover when a title is truncated) ──── */
-.gnome-todo-tooltip {
+/* ── Tooltip ──────────────────────────────────────────────────────── */
+.ankhdo-tooltip {
     background-color: #1C2136;
     border: 1px solid rgba(111, 154, 224, 0.45);
     border-radius: 8px;
@@ -479,8 +465,8 @@
 }
 
 /* Sunset glyph in the clear-completed pill and confirmation medallion. */
-.gnome-todo-clear-glyph,
-.gnome-todo-confirm-glyph {
+.ankhdo-clear-glyph,
+.ankhdo-confirm-glyph {
     color: #E89A4F;
 }
 
@@ -489,148 +475,147 @@
    A papyrus ground with ink text. Accents keep their meanings, in deeper
    shades so they stay readable on light (all text ≥ 4.5:1, controls ≥ 3:1).
    ════════════════════════════════════════════════════════════════════ */
-.gnome-todo-light .gnome-todo-header {
+.ankhdo-light .ankhdo-header {
     border-bottom-color: rgba(43, 36, 24, 0.10);
 }
 
-.gnome-todo-light .gnome-todo-header-emblem,
-.gnome-todo-light .gnome-todo-header-title {
+.ankhdo-light .ankhdo-header-emblem,
+.ankhdo-light .ankhdo-header-title {
     color: #8A6510;
 }
 
-.gnome-todo-light .gnome-todo-header-count {
+.ankhdo-light .ankhdo-header-count {
     color: #2C5BAA;
     background-color: rgba(44, 91, 170, 0.09);
     border-color: rgba(44, 91, 170, 0.25);
 }
 
-.gnome-todo-light .gnome-todo-empty-glyph { color: #2E7D4F; }
-.gnome-todo-light .gnome-todo-empty-title { color: #2B2418; }
-.gnome-todo-light .gnome-todo-empty-hint { color: #736A58; }
+.ankhdo-light .ankhdo-empty-glyph { color: #2E7D4F; }
+.ankhdo-light .ankhdo-empty-title { color: #2B2418; }
+.ankhdo-light .ankhdo-empty-hint { color: #736A58; }
 
 /* rows */
-.gnome-todo-light .gnome-todo-row:hover,
-.gnome-todo-light .gnome-todo-row:focus {
+.ankhdo-light .ankhdo-row:hover,
+.ankhdo-light .ankhdo-row:focus {
     background-color: rgba(43, 36, 24, 0.05);
 }
 
-.gnome-todo-light .gnome-todo-kbd-nav .gnome-todo-row:focus,
-.gnome-todo-light.gnome-todo-kbd-nav .gnome-todo-row:focus {
+.ankhdo-light .ankhdo-kbd-nav .ankhdo-row:focus {
     box-shadow: inset 0 0 0 1px rgba(44, 91, 170, 0.55);
 }
 
-.gnome-todo-light .gnome-todo-row-running {
+.ankhdo-light .ankhdo-row-running {
     background-color: rgba(10, 115, 104, 0.08);
 }
 
-.gnome-todo-light .gnome-todo-row.gnome-todo-row-running:hover,
-.gnome-todo-light .gnome-todo-row.gnome-todo-row-running:focus {
+.ankhdo-light .ankhdo-row.ankhdo-row-running:hover,
+.ankhdo-light .ankhdo-row.ankhdo-row-running:focus {
     background-color: rgba(10, 115, 104, 0.13);
 }
 
-.gnome-todo-light .gnome-todo-title { color: #2B2418; }
-.gnome-todo-light .gnome-todo-title-done { color: #8E8573; }
+.ankhdo-light .ankhdo-title { color: #2B2418; }
+.ankhdo-light .ankhdo-title-done { color: #8E8573; }
 
-.gnome-todo-light .gnome-todo-grip { color: #8F846E; }
-.gnome-todo-light .gnome-todo-grip:hover { color: #4A5368; }
+.ankhdo-light .ankhdo-grip { color: #8F846E; }
+.ankhdo-light .ankhdo-grip:hover { color: #4A5368; }
 
-.gnome-todo-light .gnome-todo-checkbox {
+.ankhdo-light .ankhdo-checkbox {
     border-color: #8F846E;
 }
 
-.gnome-todo-light .gnome-todo-checkbox:hover {
+.ankhdo-light .ankhdo-checkbox:hover {
     border-color: #0A7368;
     background-color: rgba(10, 115, 104, 0.10);
 }
 
-.gnome-todo-light .gnome-todo-checkbox-done,
-.gnome-todo-light .gnome-todo-checkbox-done:hover {
+.ankhdo-light .ankhdo-checkbox-done,
+.ankhdo-light .ankhdo-checkbox-done:hover {
     border-color: #2E7D4F;
     background-color: #2E7D4F;
 }
 
-.gnome-todo-light .gnome-todo-check-feather { color: #FFF8E8; }
+.ankhdo-light .ankhdo-check-feather { color: #FFF8E8; }
 
-.gnome-todo-light .gnome-todo-timer-label { color: #736A58; }
-.gnome-todo-light .gnome-todo-timer-label-active { color: #0A7368; }
+.ankhdo-light .ankhdo-timer-label { color: #736A58; }
+.ankhdo-light .ankhdo-timer-label-active { color: #0A7368; }
 
 /* row buttons: slate at rest, their colour under the pointer */
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn { color: #6A6252; }
+.ankhdo-light .ankhdo-row .ankhdo-icon-btn { color: #6A6252; }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-copy:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-copy:hover {
     color: #2C5BAA;
     background-color: rgba(44, 91, 170, 0.12);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied,
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-btn.gnome-todo-copied:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-btn.ankhdo-copied,
+.ankhdo-light .ankhdo-row .ankhdo-icon-btn.ankhdo-copied:hover {
     color: #2E7D4F;
     background-color: rgba(46, 125, 79, 0.14);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-edit:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-edit:hover {
     color: #2B2418;
     background-color: rgba(74, 83, 104, 0.12);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-delete:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-delete:hover {
     color: #B23A22;
     background-color: rgba(178, 58, 34, 0.11);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-timer:hover {
     color: #0A7368;
     background-color: rgba(10, 115, 104, 0.11);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active {
+.ankhdo-light .ankhdo-row .ankhdo-icon-timer.ankhdo-timer-active {
     color: #0A7368;
     background-color: rgba(10, 115, 104, 0.10);
 }
 
-.gnome-todo-light .gnome-todo-row .gnome-todo-icon-timer.gnome-todo-timer-active:hover {
+.ankhdo-light .ankhdo-row .ankhdo-icon-timer.ankhdo-timer-active:hover {
     background-color: rgba(10, 115, 104, 0.18);
 }
 
-.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging,
-.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging:hover,
-.gnome-todo-light .gnome-todo-row.gnome-todo-row-dragging:focus {
+.ankhdo-light .ankhdo-row.ankhdo-row-dragging,
+.ankhdo-light .ankhdo-row.ankhdo-row-dragging:hover,
+.ankhdo-light .ankhdo-row.ankhdo-row-dragging:focus {
     background-color: #FFFDF8;
     box-shadow: inset 0 0 0 1px rgba(44, 91, 170, 0.55);
 }
 
 /* add field */
-.gnome-todo-light .gnome-todo-add-scarab { color: #2C5BAA; }
+.ankhdo-light .ankhdo-add-scarab { color: #2C5BAA; }
 
-.gnome-todo-light .gnome-todo-input-shell {
+.ankhdo-light .ankhdo-input-shell {
     background-color: #FFFDF8;
     border-color: rgba(44, 91, 170, 0.25);
 }
 
-.gnome-todo-light .gnome-todo-input-shell:hover {
+.ankhdo-light .ankhdo-input-shell:hover {
     background-color: #FFFFFF;
     border-color: rgba(44, 91, 170, 0.45);
 }
 
-.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry,
-.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:hover,
-.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:focus,
-.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry:active {
+.ankhdo-light .ankhdo-input-shell .ankhdo-entry,
+.ankhdo-light .ankhdo-input-shell .ankhdo-entry:hover,
+.ankhdo-light .ankhdo-input-shell .ankhdo-entry:focus,
+.ankhdo-light .ankhdo-input-shell .ankhdo-entry:active {
     color: #2B2418 !important;
 }
 
-.gnome-todo-light .gnome-todo-input-shell .gnome-todo-entry StLabel.hint-text {
+.ankhdo-light .ankhdo-input-shell .ankhdo-entry StLabel.hint-text {
     color: #736A58 !important;
 }
 
 /* edit row */
-.gnome-todo-light .gnome-todo-edit-shell {
+.ankhdo-light .ankhdo-edit-shell {
     background-color: rgba(74, 83, 104, 0.06);
 }
 
-.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry,
-.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:hover,
-.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry,
+.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:hover,
+.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:focus {
     background-color: #FFFDF8 !important;
     border-color: rgba(74, 83, 104, 0.35) !important;
     color: #2B2418 !important;
@@ -638,87 +623,87 @@
     selected-color: #2B2418;
 }
 
-.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry:focus {
+.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:focus {
     border-color: #4A5368 !important;
 }
 
-.gnome-todo-light .gnome-todo-edit-shell .gnome-todo-edit-entry StLabel.hint-text {
+.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry StLabel.hint-text {
     color: #736A58 !important;
 }
 
-.gnome-todo-light .gnome-todo-save-btn {
+.ankhdo-light .ankhdo-save-btn {
     color: #FFFFFF;
     background-color: #4A5368;
 }
 
-.gnome-todo-light .gnome-todo-save-btn:hover { background-color: #3A4256; }
+.ankhdo-light .ankhdo-save-btn:hover { background-color: #3A4256; }
 
-.gnome-todo-light .gnome-todo-cancel-btn { color: #6A6252; }
+.ankhdo-light .ankhdo-cancel-btn { color: #6A6252; }
 
-.gnome-todo-light .gnome-todo-cancel-btn:hover {
+.ankhdo-light .ankhdo-cancel-btn:hover {
     color: #2B2418;
     background-color: rgba(43, 36, 24, 0.06);
 }
 
 /* clear completed + confirmation (sunset) */
-.gnome-todo-light .gnome-todo-clear-btn {
+.ankhdo-light .ankhdo-clear-btn {
     color: #6A6252;
     background-color: rgba(43, 36, 24, 0.03);
     border-color: rgba(43, 36, 24, 0.12);
 }
 
-.gnome-todo-light .gnome-todo-clear-btn:hover {
+.ankhdo-light .ankhdo-clear-btn:hover {
     color: #A9550F;
     background-color: rgba(169, 85, 15, 0.10);
     border-color: rgba(169, 85, 15, 0.40);
 }
 
-.gnome-todo-light .gnome-todo-clear-count { color: #6A6252; }
-.gnome-todo-light .gnome-todo-clear-btn:hover .gnome-todo-clear-count { color: #A9550F; }
+.ankhdo-light .ankhdo-clear-count { color: #6A6252; }
+.ankhdo-light .ankhdo-clear-btn:hover .ankhdo-clear-count { color: #A9550F; }
 
-.gnome-todo-light .gnome-todo-clear-glyph,
-.gnome-todo-light .gnome-todo-confirm-glyph { color: #A9550F; }
+.ankhdo-light .ankhdo-clear-glyph,
+.ankhdo-light .ankhdo-confirm-glyph { color: #A9550F; }
 
-.gnome-todo-light .gnome-todo-confirm-shell {
+.ankhdo-light .ankhdo-confirm-shell {
     background-color: rgba(169, 85, 15, 0.06);
     border-color: rgba(169, 85, 15, 0.28);
 }
 
-.gnome-todo-light .gnome-todo-confirm-icon {
+.ankhdo-light .ankhdo-confirm-icon {
     color: #A9550F;
     background-color: rgba(169, 85, 15, 0.12);
 }
 
-.gnome-todo-light .gnome-todo-confirm-title { color: #2B2418; }
-.gnome-todo-light .gnome-todo-confirm-sub { color: #6A6252; }
+.ankhdo-light .ankhdo-confirm-title { color: #2B2418; }
+.ankhdo-light .ankhdo-confirm-sub { color: #6A6252; }
 
-.gnome-todo-light .gnome-todo-confirm-remove {
+.ankhdo-light .ankhdo-confirm-remove {
     color: #FFFFFF;
     background-color: #A9550F;
 }
 
-.gnome-todo-light .gnome-todo-confirm-remove:hover { background-color: #8E470C; }
+.ankhdo-light .ankhdo-confirm-remove:hover { background-color: #8E470C; }
 
 /* undo bar */
-.gnome-todo-light .gnome-todo-undo-shell {
+.ankhdo-light .ankhdo-undo-shell {
     background-color: rgba(43, 36, 24, 0.04);
     border-color: rgba(43, 36, 24, 0.10);
 }
 
-.gnome-todo-light .gnome-todo-undo-label { color: #6A6252; }
+.ankhdo-light .ankhdo-undo-label { color: #6A6252; }
 
-.gnome-todo-light .gnome-todo-undo-btn {
+.ankhdo-light .ankhdo-undo-btn {
     color: #2C5BAA;
     background-color: rgba(44, 91, 170, 0.10);
 }
 
-.gnome-todo-light .gnome-todo-undo-btn:hover {
+.ankhdo-light .ankhdo-undo-btn:hover {
     color: #224A8C;
     background-color: rgba(44, 91, 170, 0.20);
 }
 
 /* tooltip (lives outside the menu, so it carries the class itself) */
-.gnome-todo-tooltip.gnome-todo-light {
+.ankhdo-tooltip.ankhdo-light {
     background-color: #FFFDF8;
     border-color: rgba(43, 36, 24, 0.16);
     color: #2B2418;
@@ -726,6 +711,6 @@
 }
 
 /* The shell's separator is drawn for dark menus; tint it ink on papyrus. */
-.gnome-todo-light .popup-separator-menu-item-separator {
+.ankhdo-light .popup-separator-menu-item-separator {
     background-color: rgba(43, 36, 24, 0.12);
 }

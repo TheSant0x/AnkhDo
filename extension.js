@@ -11,65 +11,35 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-// ── Pharaonic palette (tomb-at-night with treasure gold) ─────────────────
-const C = {
-    gold:       '#E8C56A',   // treasure gold — brand (ankh + title) only
-    lapis:      '#6F9AE0',   // lapis lazuli — copy, add field, header
-    turquoise:  '#45C4B0',   // faience turquoise — the running task
-    malachite:  '#5FB98A',   // malachite green — done / running
-    carnelian:  '#E0654B',   // carnelian red — delete
-    silver:     '#C3CCE0',   // Thoth's moon silver — edit
-    ochre:      '#E89A4F',   // sunset ochre — clear completed
-    cream:      '#EAD9B0',   // papyrus cream — primary text
-    doneText:   '#7A84A3',   // faded slate — finished titles recede
-    doneTextLight: '#8E8573',  // faded ink on the off-white theme
-};
+// Strikethrough colour for finished titles, set in Pango markup (not CSS).
+const DONE_TEXT = '#7A84A3';
+const DONE_TEXT_LIGHT = '#8E8573';
 
-// ── Storage ──────────────────────────────────────────────────────────────
-// Tasks live in the user's config dir (persists across extension updates),
-// NOT inside the extension folder (which is wiped on every update).
-const DATA_SUBDIR = 'scroll-of-deeds';
-
-function dataDir() {
-    return GLib.build_filenamev([GLib.get_user_config_dir(), DATA_SUBDIR]);
-}
-function getStoragePath() {
-    return GLib.build_filenamev([dataDir(), 'tasks.json']);
-}
-function legacyStoragePath(ext) {
-    return GLib.build_filenamev([ext.path, 'tasks.json']);
-}
+// Tasks live in the config dir, not the extension folder, which is replaced
+// on every update.
+const DATA_DIR = GLib.build_filenamev([GLib.get_user_config_dir(), 'scroll-of-deeds']);
+const DATA_FILE = GLib.build_filenamev([DATA_DIR, 'tasks.json']);
 
 Gio._promisify(Gio.File.prototype, 'load_contents_async');
 Gio._promisify(Gio.File.prototype, 'replace_contents_bytes_async', 'replace_contents_finish');
 
 const isGioError = (e, code) => e instanceof GLib.Error && e.matches(Gio.IOErrorEnum, code);
 
-async function readTasks(path, cancellable) {
-    const [bytes] = await Gio.File.new_for_path(path).load_contents_async(cancellable);
-    const tasks = JSON.parse(new TextDecoder('utf-8').decode(bytes)) || [];
-    tasks.forEach(t => {
-        if (typeof t.elapsedSeconds !== 'number') t.elapsedSeconds = 0;
-        if (typeof t.running !== 'boolean') t.running = false;
-        if (typeof t.startedAt !== 'number') t.startedAt = null;
-    });
-    return tasks;
-}
-
-// Reads the task file; falls back once to the old in-extension location.
-async function loadTasks(ext, cancellable) {
-    for (const path of [getStoragePath(), legacyStoragePath(ext)]) {
-        try {
-            return { tasks: await readTasks(path, cancellable), migrated: path !== getStoragePath() };
-        } catch (e) {
-            if (isGioError(e, Gio.IOErrorEnum.CANCELLED)) throw e;
-            if (!isGioError(e, Gio.IOErrorEnum.NOT_FOUND)) {
-                console.error(e);
-                break;
-            }
+async function loadTasks(cancellable) {
+    try {
+        const [bytes] = await Gio.File.new_for_path(DATA_FILE).load_contents_async(cancellable);
+        const tasks = JSON.parse(new TextDecoder().decode(bytes)) || [];
+        for (const t of tasks) {
+            t.elapsedSeconds ??= 0;
+            t.running ??= false;
+            t.startedAt ??= null;
         }
+        return tasks;
+    } catch (e) {
+        if (isGioError(e, Gio.IOErrorEnum.CANCELLED)) throw e;
+        if (!isGioError(e, Gio.IOErrorEnum.NOT_FOUND)) console.error(e);
+        return [];
     }
-    return { tasks: [], migrated: false };
 }
 
 // GRAB/GRABBING came with mutter's CSS cursor names; older shells (45/46) lack them.
@@ -77,16 +47,16 @@ const CURSOR_GRAB = Meta.Cursor.GRAB ?? Meta.Cursor.POINTING_HAND ?? Meta.Cursor
 const CURSOR_GRABBING = Meta.Cursor.GRABBING ?? Meta.Cursor.DND_IN_DRAG ?? Meta.Cursor.DEFAULT;
 
 const MENU_WIDTH = 560;
-const MENU_MAX_LIST_HEIGHT = 460;   // the list grows with its tasks up to this, then scrolls
+const MENU_MAX_LIST_HEIGHT = 460;
 const UNDO_SECONDS = 6;
-const MAX_TITLE_LEN = 120;   // cap on a task's text length
+const MAX_TITLE_LEN = 120;
+const DRAG_THRESHOLD = 6;
 
 // Unique id even for tasks created within the same millisecond.
 let idSeq = 0;
 function nextId() { return Date.now() * 1000 + (idSeq++ % 1000); }
 
-// Custom pharaonic glyph loaded from icons/*-symbolic.svg (recolors via CSS,
-// and falls back to gold fill if the shell does not recolor it).
+// Symbolic icons from icons/, recoloured by the CSS `color` of styleClass.
 function glyph(ext, name, size, styleClass) {
     const path = GLib.build_filenamev([ext.path, 'icons', `${name}-symbolic.svg`]);
     const icon = new St.Icon({
@@ -114,9 +84,8 @@ function formatElapsed(totalSeconds) {
     return `${d}d ${rh}h`;
 }
 
-// ── Indicator ────────────────────────────────────────────────────────────
-const GnomeTodoIndicator = GObject.registerClass(
-class GnomeTodoIndicator extends PanelMenu.Button {
+const AnkhDoIndicator = GObject.registerClass(
+class AnkhDoIndicator extends PanelMenu.Button {
 
     _init(ext) {
         super._init(0.0, 'Ankh Do');
@@ -126,62 +95,56 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._saving = false;
         this._saveWanted = false;
         this._cancellable = new Gio.Cancellable();
-        this._settings = null;
-        this._themeChangedId = 0;
         this._editRowId = null;
         this._drag = null;
         this._rowActors = [];
         this._confirmingClear = false;
         this._addEntry = null;
         this._addFocusTimer = 0;
-        this._undo = null;   // { task, idx, timer, item } for the last deleted task
-        this._focusTaskId = null;   // row to re-focus after a keyboard-driven rebuild
         this._rowFocusTimer = 0;
         this._copyTimer = 0;
+        this._tickTimer = 0;
+        this._undo = null;          // { task, idx, timer, item } for the last deleted task
+        this._focusTaskId = null;   // row to re-focus after a keyboard-driven rebuild
         this._tooltip = null;
         this._tooltipForItem = null;
         this._timerLabels = new Map();
 
         const panelBox = new St.BoxLayout({
-            style_class: 'gnome-todo-panel-pill',
+            style_class: 'ankhdo-panel-pill',
             y_align: Clutter.ActorAlign.CENTER,
         });
-        panelBox.add_child(glyph(ext, 'ankh-panel', 16, 'gnome-todo-panel-icon'));
+        panelBox.add_child(glyph(ext, 'ankh-panel', 16));
         this._panelCount = new St.Label({
             text: '',
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'gnome-todo-panel-count',
+            style_class: 'ankhdo-panel-count',
         });
         panelBox.add_child(this._panelCount);
         this.add_child(panelBox);
-        this.add_style_class_name('gnome-todo-panel-button');
 
-        // Fixed width on the content box: titles flex to fill a row, so a long
-        // title must ellipsize rather than widen the menu.
-        // Night-lapis gradient: a tomb ceiling — deep blue, gold stars.
         this.menu.actor.style = `min-width:${MENU_WIDTH}px;`;
-        this.menu.actor.add_style_class_name('gnome-todo-menu');
+        this.menu.actor.add_style_class_name('ankhdo-menu');
         this._settings = ext.getSettings();
         this._applyTheme();
 
-        // ── Header (ankh · title · remaining count) ──────────────────────
         const headerItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
         headerItem.remove_style_class_name('popup-menu-item');
         headerItem.style = 'padding:0;';
         const header = new St.BoxLayout({
             vertical: false, x_expand: true,
-            style_class: 'gnome-todo-header',
+            style_class: 'ankhdo-header',
         });
-        header.add_child(glyph(ext, 'ankh', 20, 'gnome-todo-header-emblem'));
+        header.add_child(glyph(ext, 'ankh', 20, 'ankhdo-header-emblem'));
         header.add_child(new St.Label({
             text: 'ANKH DO',
             y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'gnome-todo-header-title',
+            style_class: 'ankhdo-header-title',
         }));
         header.add_child(new St.Widget({ x_expand: true }));
         this._headerCount = new St.Label({
             text: '', y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'gnome-todo-header-count',
+            style_class: 'ankhdo-header-count',
         });
         header.add_child(this._headerCount);
         headerItem.add_child(header);
@@ -210,22 +173,16 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._updatePanelCount();
         this._load();
 
-        // Drag-to-reorder. Captured on the menu itself: while open, the menu's
-        // grab means events never reach global.stage.
         this._themeChangedId = this._settings.connect('changed::light-theme', () => {
             this._applyTheme();
             this._buildMenu();
         });
+        // On the menu, not global.stage: the open menu holds a grab, so events
+        // never reach the stage.
         this._menuCaptureId = this.menu.actor.connect('captured-event', (_a, event) => this._onMenuCapture(event));
-
-        // Focus the "add task" field whenever the menu opens.
-        this._menuOpenId = this.menu.connect('open-state-changed', (menu, isOpen) => {
+        this._menuOpenId = this.menu.connect('open-state-changed', (_menu, isOpen) => {
             if (isOpen) {
-                // Labels were last drawn when the menu closed; bring them current.
-                for (const task of this._tasks) {
-                    const lbl = task.running && this._timerLabels.get(task.id);
-                    if (lbl) lbl.text = formatElapsed(liveElapsedSeconds(task));
-                }
+                this._updateClocks();
                 this._startTick();
                 this._focusAddDeferred();
             } else {
@@ -236,18 +193,20 @@ class GnomeTodoIndicator extends PanelMenu.Button {
                 global.display.set_cursor(Meta.Cursor.DEFAULT);
             }
         });
-
-        this._tickTimer = 0;
     }
 
-    // Running clocks only need to tick while someone can see them.
+    _updateClocks() {
+        for (const task of this._tasks) {
+            const lbl = task.running && this._timerLabels.get(task.id);
+            if (lbl) lbl.text = formatElapsed(liveElapsedSeconds(task));
+        }
+    }
+
+    // Clocks only tick while the menu is open.
     _startTick() {
         if (this._tickTimer) return;
         this._tickTimer = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () => {
-            for (const task of this._tasks) {
-                const lbl = task.running && this._timerLabels.get(task.id);
-                if (lbl) lbl.text = formatElapsed(liveElapsedSeconds(task));
-            }
+            this._updateClocks();
             return GLib.SOURCE_CONTINUE;
         });
     }
@@ -257,7 +216,6 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._tickTimer = 0;
     }
 
-    // ── Theme ────────────────────────────────────────────────────────
     get _light() {
         return this._settings.get_boolean('light-theme');
     }
@@ -273,18 +231,16 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             'background-gradient-direction:vertical;' +
             `background-gradient-start:${top};background-gradient-end:${bottom};` +
             `border-color:${border};`;
-        if (light) this.menu.actor.add_style_class_name('gnome-todo-light');
-        else this.menu.actor.remove_style_class_name('gnome-todo-light');
+        if (light) this.menu.actor.add_style_class_name('ankhdo-light');
+        else this.menu.actor.remove_style_class_name('ankhdo-light');
     }
 
-    // ── Storage (asynchronous, so the shell never waits on the disk) ───
     async _load() {
         try {
-            const { tasks, migrated } = await loadTasks(this._ext, this._cancellable);
+            const tasks = await loadTasks(this._cancellable);
             // Anything added in the moment before the file was read stays on top.
             this._tasks = this._tasks.concat(tasks);
             this._loaded = true;
-            if (migrated) this._saveWanted = true;
             if (this._saveWanted) this._flushSave();
             this._updatePanelCount();
             this._buildMenu();
@@ -306,9 +262,9 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         while (this._saveWanted) {
             this._saveWanted = false;
             try {
-                GLib.mkdir_with_parents(dataDir(), 0o700);
+                GLib.mkdir_with_parents(DATA_DIR, 0o700);
                 const bytes = new GLib.Bytes(new TextEncoder().encode(JSON.stringify(this._tasks, null, 2)));
-                await Gio.File.new_for_path(getStoragePath()).replace_contents_bytes_async(
+                await Gio.File.new_for_path(DATA_FILE).replace_contents_bytes_async(
                     bytes, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
             } catch (e) {
                 console.error(e);
@@ -320,25 +276,19 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _updatePanelCount() {
         const remaining = this._tasks.filter(t => !t.done).length;
         this._panelCount.text = `${remaining}`;
-        if (this._headerCount) {
-            const total = this._tasks.length;
-            this._headerCount.text =
-                total === 0 ? 'empty'
-                : remaining === 0 ? 'all done'
-                : `${remaining} open`;
-        }
+        this._headerCount.text =
+            this._tasks.length === 0 ? 'empty'
+            : remaining === 0 ? 'all done'
+            : `${remaining} open`;
     }
 
-    // Floating tooltip showing a task's full text when its label is truncated.
+    // Shows a task's full text when its title is cut off.
     _showTooltip(label, text, rowActor) {
-        let truncated = false;
-        try { truncated = label.clutter_text.get_layout().is_ellipsized(); }
-        catch { truncated = text.length > 28; }
-        if (!truncated) return;
+        if (!label.clutter_text.get_layout().is_ellipsized()) return;
         this._hideTooltip();
         const tt = new St.Label({
             text,
-            style_class: this._light ? 'gnome-todo-tooltip gnome-todo-light' : 'gnome-todo-tooltip',
+            style_class: this._light ? 'ankhdo-tooltip ankhdo-light' : 'ankhdo-tooltip',
         });
         tt.clutter_text.set_line_wrap(true);
         tt.clutter_text.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);
@@ -357,39 +307,36 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._tooltipForItem = null;
     }
 
-    // Focus the add field on the next loop iteration, once it's mapped.
+    // Deferred: a just-built entry isn't mapped yet, so focusing it now
+    // wouldn't stick.
     _focusAddDeferred() {
         if (this._addFocusTimer) return;
         this._addFocusTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 20, () => {
             this._addFocusTimer = 0;
-            try {
-                if (this._addEntry && this._editRowId === null && this.menu.isOpen)
-                    global.stage.set_key_focus(this._addEntry);
-            } catch {}
+            if (this._addEntry && this._editRowId === null && this.menu.isOpen)
+                global.stage.set_key_focus(this._addEntry);
             return GLib.SOURCE_REMOVE;
         });
     }
 
     _showCopyFeedback(btn) {
         const icon = btn.get_child();
-        if (!icon) return;
         // A repeat copy restarts the timer but keeps the real original icon.
         if (this._copyTimer) GLib.source_remove(this._copyTimer);
         else this._copyIconName = icon.icon_name;
         icon.icon_name = 'object-select-symbolic';
-        btn.add_style_class_name('gnome-todo-copied');
+        btn.add_style_class_name('ankhdo-copied');
         this._copyTimer = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 900, () => {
             this._copyTimer = 0;
             icon.icon_name = this._copyIconName;
-            btn.remove_style_class_name('gnome-todo-copied');
+            btn.remove_style_class_name('ankhdo-copied');
             return GLib.SOURCE_REMOVE;
         });
     }
 
-    // ── Menu build ──────────────────────────────────────────────────────
     _buildMenu() {
         this._hideTooltip();
-        // The copy button the feedback timer points at is about to be destroyed.
+        // The button the copy feedback points at is about to be destroyed.
         if (this._copyTimer) {
             GLib.source_remove(this._copyTimer);
             this._copyTimer = 0;
@@ -408,20 +355,20 @@ class GnomeTodoIndicator extends PanelMenu.Button {
                 y_align: Clutter.ActorAlign.CENTER,
             });
 
-            const mark = glyph(this._ext, 'papyrus', 50, 'gnome-todo-empty-glyph');
+            const mark = glyph(this._ext, 'papyrus', 50, 'ankhdo-empty-glyph');
             mark.set_x_align(Clutter.ActorAlign.CENTER);
             col.add_child(mark);
 
             const emptyTitle = new St.Label({
                 text: 'The papyrus is blank',
-                style_class: 'gnome-todo-empty-title',
+                style_class: 'ankhdo-empty-title',
             });
             emptyTitle.set_x_align(Clutter.ActorAlign.CENTER);
             col.add_child(emptyTitle);
 
             const emptyHint = new St.Label({
                 text: 'Inscribe your first deed below',
-                style_class: 'gnome-todo-empty-hint',
+                style_class: 'ankhdo-empty-hint',
             });
             emptyHint.set_x_align(Clutter.ActorAlign.CENTER);
             col.add_child(emptyHint);
@@ -429,7 +376,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             empty.add_child(col);
             this._taskSection.addMenuItem(empty);
         } else {
-            this._tasks.forEach((task, idx) => this._taskRow(task, idx));
+            for (const task of this._tasks) this._taskRow(task);
         }
 
         if (this._undo) this._buildUndoRow();
@@ -437,7 +384,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         if (this._focusTaskId !== null) this._focusRowDeferred();
     }
 
-    // Like _focusAddDeferred: a just-rebuilt row isn't mapped yet.
+    // Deferred for the same reason as _focusAddDeferred.
     _focusRowDeferred() {
         const id = this._focusTaskId;
         this._focusTaskId = null;
@@ -450,7 +397,6 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         });
     }
 
-    // ── Task actions (shared by mouse and keyboard) ──────────────────
     _toggleDone(task) {
         task.done = !task.done;
         if (task.done && task.running) {
@@ -464,7 +410,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     }
 
     _toggleTimer(task) {
-        if (task.done) return; // a completed task's timer never runs
+        if (task.done) return;
         if (task.running) {
             task.elapsedSeconds = liveElapsedSeconds(task);
             task.running = false;
@@ -500,37 +446,36 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._buildMenu();
     }
 
-    // Keys on a focused row. Returning STOP also keeps the menu item from
-    // treating Space/Enter as "activate" (which would close the menu).
+    // Returning EVENT_STOP also keeps the menu item from treating Space/Enter
+    // as "activate", which would close the menu.
     _onRowKey(task, event, copyBtn) {
         const sym = event.get_key_symbol();
-        const state = event.get_state();
-        const alt = (state & Clutter.ModifierType.MOD1_MASK) !== 0;
-        const K = Clutter;
+        const alt = (event.get_state() & Clutter.ModifierType.MOD1_MASK) !== 0;
 
-        if (alt && (sym === K.KEY_Up || sym === K.KEY_Down)) {
-            this._moveTask(task, sym === K.KEY_Up ? -1 : 1);
+        if (alt && (sym === Clutter.KEY_Up || sym === Clutter.KEY_Down)) {
+            this._moveTask(task, sym === Clutter.KEY_Up ? -1 : 1);
             return Clutter.EVENT_STOP;
         }
         if (alt) return Clutter.EVENT_PROPAGATE;
 
         switch (sym) {
-        case K.KEY_space:
+        case Clutter.KEY_space:
             this._focusTaskId = task.id;
             this._toggleDone(task);
             return Clutter.EVENT_STOP;
-        case K.KEY_Return: case K.KEY_KP_Enter: case K.KEY_F2: case K.KEY_e:
+        case Clutter.KEY_Return: case Clutter.KEY_KP_Enter: case Clutter.KEY_F2: case Clutter.KEY_e:
             this._startEdit(task);
             return Clutter.EVENT_STOP;
-        case K.KEY_t:
-            if (task.done) return Clutter.EVENT_STOP;
-            this._focusTaskId = task.id;
-            this._toggleTimer(task);
+        case Clutter.KEY_t:
+            if (!task.done) {
+                this._focusTaskId = task.id;
+                this._toggleTimer(task);
+            }
             return Clutter.EVENT_STOP;
-        case K.KEY_c:
+        case Clutter.KEY_c:
             this._copyTask(task, copyBtn);
             return Clutter.EVENT_STOP;
-        case K.KEY_Delete: case K.KEY_BackSpace: {
+        case Clutter.KEY_Delete: case Clutter.KEY_BackSpace: {
             const i = this._tasks.indexOf(task);
             const next = this._tasks[i + 1] ?? this._tasks[i - 1];
             this._focusTaskId = next ? next.id : null;
@@ -545,17 +490,17 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         const item = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
         item.remove_style_class_name('popup-menu-item');
         item.style = 'padding:8px 14px 0 14px;';
-        const bar = new St.BoxLayout({ x_expand: true, style_class: 'gnome-todo-undo-shell' });
+        const bar = new St.BoxLayout({ x_expand: true, style_class: 'ankhdo-undo-shell' });
         const msg = new St.Label({
             text: `Deleted “${this._undo.task.title}”`,
             x_expand: true, y_align: Clutter.ActorAlign.CENTER,
-            style_class: 'gnome-todo-undo-label',
+            style_class: 'ankhdo-undo-label',
         });
         msg.clutter_text.set_ellipsize(Pango.EllipsizeMode.END);
         bar.add_child(msg);
         const undoBtn = new St.Button({
             label: 'Undo', reactive: true, track_hover: true, can_focus: true,
-            style_class: 'gnome-todo-undo-btn',
+            style_class: 'ankhdo-undo-btn',
         });
         undoBtn.connect('clicked', () => this._restoreDeleted());
         bar.add_child(undoBtn);
@@ -570,8 +515,8 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._tasks.splice(idx, 1);
         this._save();
         this._undo = { task, idx, item: null, timer: 0 };
-        // Expire by removing just the bar: a full rebuild would discard an
-        // in-progress edit elsewhere in the menu.
+        // Expires by removing just the bar: a full rebuild would discard an
+        // edit in progress.
         this._undo.timer = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, UNDO_SECONDS, () => {
             this._undo.timer = 0;
             this._dropUndo();
@@ -609,14 +554,14 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const inputShell = new St.BoxLayout({
             vertical: false, x_expand: true,
-            style_class: 'gnome-todo-input-shell',
+            style_class: 'ankhdo-input-shell',
         });
-        inputShell.add_child(glyph(this._ext, 'scarab', 18, 'gnome-todo-add-scarab'));
+        inputShell.add_child(glyph(this._ext, 'scarab', 18, 'ankhdo-add-scarab'));
 
         const entry = new St.Entry({
             hint_text: 'Inscribe a deed…',
             can_focus: true, x_expand: true,
-            style_class: 'gnome-todo-entry',
+            style_class: 'ankhdo-entry',
         });
         entry.clutter_text.set_max_length(MAX_TITLE_LEN);
         entry.get_clutter_text().connect('activate', () => {
@@ -634,26 +579,23 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         row.add_child(inputShell);
         this._addEntry = entry;
 
-        // Keep the add field focused whenever the menu is open and no task is
-        // being edited, so tasks can be added one after another (press Enter,
-        // keep typing) without re-clicking the field. Deferred, because a just-
-        // rebuilt entry isn't mapped yet, so a synchronous focus wouldn't stick.
+        // Keep focus here so several tasks can be typed in a row.
         if (this._editRowId === null && this._focusTaskId === null && this.menu.isOpen)
             this._focusAddDeferred();
 
         const doneCount = this._tasks.filter(t => t.done).length;
         if (doneCount > 0) {
             const clearBox = new St.BoxLayout({ vertical: false, style: 'spacing:6px;' });
-            clearBox.add_child(glyph(this._ext, 'sunset', 15, 'gnome-todo-clear-glyph'));
+            clearBox.add_child(glyph(this._ext, 'sunset', 15, 'ankhdo-clear-glyph'));
             clearBox.add_child(new St.Label({
                 text: `${doneCount}`,
                 y_align: Clutter.ActorAlign.CENTER,
-                style_class: 'gnome-todo-clear-count',
+                style_class: 'ankhdo-clear-count',
             }));
             const clearBtn = new St.Button({
                 child: clearBox,
                 accessible_name: `Clear ${doneCount} completed task${doneCount === 1 ? '' : 's'}`,
-                style_class: 'gnome-todo-clear-btn',
+                style_class: 'ankhdo-clear-btn',
                 reactive: true, track_hover: true,
             });
             clearBtn.connect('clicked', () => {
@@ -676,16 +618,15 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const card = new St.BoxLayout({
             vertical: true, x_expand: true,
-            style_class: 'gnome-todo-confirm-shell',
+            style_class: 'ankhdo-confirm-shell',
         });
 
-        // headline row: icon medallion + title / subtitle
         const top = new St.BoxLayout({ vertical: false, x_expand: true, style: 'spacing:12px;' });
         const medallion = new St.Bin({
-            style_class: 'gnome-todo-confirm-icon',
+            style_class: 'ankhdo-confirm-icon',
             y_align: Clutter.ActorAlign.CENTER,
         });
-        medallion.set_child(glyph(this._ext, 'sunset', 18, 'gnome-todo-confirm-glyph'));
+        medallion.set_child(glyph(this._ext, 'sunset', 18, 'ankhdo-confirm-glyph'));
         top.add_child(medallion);
 
         const textCol = new St.BoxLayout({
@@ -693,16 +634,15 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         });
         textCol.add_child(new St.Label({
             text: 'Clear completed deeds?',
-            style_class: 'gnome-todo-confirm-title',
+            style_class: 'ankhdo-confirm-title',
         }));
         textCol.add_child(new St.Label({
             text: `${doneCount} finished deed${doneCount === 1 ? '' : 's'} will be sent to the afterlife.`,
-            style_class: 'gnome-todo-confirm-sub',
+            style_class: 'ankhdo-confirm-sub',
         }));
         top.add_child(textCol);
         card.add_child(top);
 
-        // actions
         const btnRow = new St.BoxLayout({
             vertical: false, x_expand: true,
             style: 'spacing:8px; padding-top:12px;',
@@ -711,7 +651,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const cancelBtn = new St.Button({
             label: 'Keep',
-            style_class: 'gnome-todo-cancel-btn',
+            style_class: 'ankhdo-cancel-btn',
             reactive: true, track_hover: true,
         });
         cancelBtn.connect('clicked', () => {
@@ -721,7 +661,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const confirmBtn = new St.Button({
             label: 'Send away',
-            style_class: 'gnome-todo-confirm-remove',
+            style_class: 'ankhdo-confirm-remove',
             reactive: true, track_hover: true,
         });
         confirmBtn.connect('clicked', () => {
@@ -739,39 +679,35 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._bottomSection.addMenuItem(bottomItem);
     }
 
-    _iconButton(iconName, onClick, extraClass = '', accessibleName = '') {
+    _rowButton(icon, accessibleName, styleClass, onClick) {
         const btn = new St.Button({
-            child: new St.Icon({ icon_name: iconName, icon_size: 16 }),
+            child: icon,
             accessible_name: accessibleName,
+            style_class: `ankhdo-icon-btn ${styleClass}`,
             reactive: true, track_hover: true,
         });
-        btn.add_style_class_name('gnome-todo-icon-btn');
-        if (extraClass) btn.add_style_class_name(extraClass);
         btn.connect('clicked', onClick);
         return btn;
     }
 
-    // ── Single task row ──────────────────────────────────────────────────
-    _taskRow(task, idx) {
+    _taskRow(task) {
         if (this._editRowId === task.id) {
             this._buildEditRow(task);
             return;
         }
         const item = new PopupMenu.PopupBaseMenuItem({ reactive: true, hover: true });
         item.style = 'padding:8px 14px 8px 4px;';
-        item.add_style_class_name('gnome-todo-row');
-        if (task.done) item.add_style_class_name('gnome-todo-row-done');
-        else if (task.running) item.add_style_class_name('gnome-todo-row-running');
+        item.add_style_class_name('ankhdo-row');
+        if (task.running) item.add_style_class_name('ankhdo-row-running');
         this._rowActors.push({ item, task });
 
         const row = new St.BoxLayout({
             vertical: false, x_expand: true,
-            style_class: 'gnome-todo-task-layout',
+            style_class: 'ankhdo-task-layout',
         });
 
-        // Drag grip: shown on hover so rows read as movable. Uses opacity, not
-        // visibility, so it always keeps its space and nothing shifts.
-        const grip = glyph(this._ext, 'grip', 14, 'gnome-todo-grip');
+        // Opacity, not visibility, so the grip keeps its space and nothing shifts.
+        const grip = glyph(this._ext, 'grip', 14, 'ankhdo-grip');
         grip.set_y_align(Clutter.ActorAlign.CENTER);
         grip.reactive = true;
         grip.track_hover = true;
@@ -782,17 +718,14 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         });
         row.add_child(grip);
 
-        // Done seal: a round malachite disc bearing the Feather of Ma'at.
         const chk = new St.Button({
-            style_class: task.done ? 'gnome-todo-checkbox gnome-todo-checkbox-done'
-                                   : 'gnome-todo-checkbox',
+            style_class: task.done ? 'ankhdo-checkbox ankhdo-checkbox-done'
+                                   : 'ankhdo-checkbox',
             reactive: true, track_hover: true,
-            // Stay a fixed 22px circle; don't stretch to the row height when the
-            // row grows taller on hover (that turned the circle into a pill).
-            y_align: Clutter.ActorAlign.CENTER, y_expand: false,
+            y_align: Clutter.ActorAlign.CENTER,
         });
         if (task.done) {
-            const f = glyph(this._ext, 'feather', 12, 'gnome-todo-check-feather');
+            const f = glyph(this._ext, 'feather', 12, 'ankhdo-check-feather');
             f.set_x_align(Clutter.ActorAlign.CENTER);
             f.set_y_align(Clutter.ActorAlign.CENTER);
             chk.set_child(f);
@@ -802,8 +735,8 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const titleLbl = new St.Label({
             text: task.title, x_expand: true,
-            style_class: task.done ? 'gnome-todo-title gnome-todo-title-done'
-                                   : 'gnome-todo-title',
+            style_class: task.done ? 'ankhdo-title ankhdo-title-done'
+                                   : 'ankhdo-title',
         });
         titleLbl.set_x_align(Clutter.ActorAlign.START);
         titleLbl.set_y_align(Clutter.ActorAlign.CENTER);
@@ -812,14 +745,12 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         titleLbl.clutter_text.set_line_wrap(false);
         if (task.done) {
             titleLbl.clutter_text.set_markup(
-                `<span strikethrough="true" foreground="${this._light ? C.doneTextLight : C.doneText}">${GLib.markup_escape_text(task.title, -1)}</span>`
+                `<span strikethrough="true" foreground="${this._light ? DONE_TEXT_LIGHT : DONE_TEXT}">${GLib.markup_escape_text(task.title, -1)}</span>`
             );
         }
         row.add_child(titleLbl);
 
-        // Timer. A running/idle task gets the live label + start-pause button.
-        // A completed task keeps its final elapsed count (read-only) but no
-        // button — its timer cannot be run again unless the task is unmarked.
+        // A finished task keeps its final time but loses the start button.
         const timerGroup = new St.BoxLayout({ vertical: false, style: 'spacing:4px;' });
         let timerLbl = null, timerBtn = null;
         if (task.done) {
@@ -827,7 +758,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
                 timerLbl = new St.Label({
                     text: formatElapsed(task.elapsedSeconds),
                     y_align: Clutter.ActorAlign.CENTER,
-                    style_class: 'gnome-todo-timer-label',
+                    style_class: 'ankhdo-timer-label',
                 });
                 timerGroup.add_child(timerLbl);
             }
@@ -835,71 +766,41 @@ class GnomeTodoIndicator extends PanelMenu.Button {
             timerLbl = new St.Label({
                 text: formatElapsed(liveElapsedSeconds(task)),
                 y_align: Clutter.ActorAlign.CENTER,
-                style_class: task.running ? 'gnome-todo-timer-label gnome-todo-timer-label-active'
-                                          : 'gnome-todo-timer-label',
+                style_class: task.running ? 'ankhdo-timer-label ankhdo-timer-label-active'
+                                          : 'ankhdo-timer-label',
             });
             this._timerLabels.set(task.id, timerLbl);
             timerGroup.add_child(timerLbl);
 
-            timerBtn = new St.Button({
-                child: new St.Icon({
+            timerBtn = this._rowButton(
+                new St.Icon({
                     icon_name: task.running ? 'media-playback-pause-symbolic' : 'media-playback-start-symbolic',
                     icon_size: 16,
                 }),
-                accessible_name: task.running ? 'Pause timer' : 'Start timer',
-                reactive: true, track_hover: true,
-            });
-            timerBtn.add_style_class_name('gnome-todo-icon-btn');
-            timerBtn.add_style_class_name('gnome-todo-icon-timer');
-            if (task.running) timerBtn.add_style_class_name('gnome-todo-timer-active');
-            timerBtn.connect('clicked', () => this._toggleTimer(task));
+                task.running ? 'Pause timer' : 'Start timer',
+                task.running ? 'ankhdo-icon-timer ankhdo-timer-active' : 'ankhdo-icon-timer',
+                () => this._toggleTimer(task));
             timerGroup.add_child(timerBtn);
         }
         row.add_child(timerGroup);
 
-        // Actions
         const actions = new St.BoxLayout({ vertical: false, style: 'spacing:4px;' });
-
-        const copyBtn = this._iconButton('edit-copy-symbolic',
-            () => this._copyTask(task, copyBtn), 'gnome-todo-icon-copy', 'Copy task');
+        const copyBtn = this._rowButton(new St.Icon({ icon_name: 'edit-copy-symbolic', icon_size: 16 }),
+            'Copy task', 'ankhdo-icon-copy', () => this._copyTask(task, copyBtn));
         actions.add_child(copyBtn);
-
-        // Edit — the scribe's pen (writing / editing the record)
-        const editBtn = new St.Button({
-            child: glyph(this._ext, 'pen', 16),
-            accessible_name: 'Edit task',
-            reactive: true, track_hover: true,
-        });
-        editBtn.add_style_class_name('gnome-todo-icon-btn');
-        editBtn.add_style_class_name('gnome-todo-icon-edit');
-        editBtn.connect('clicked', () => this._startEdit(task));
-        actions.add_child(editBtn);
-
-        // Delete — the flint des-blade (execration / the knife that severs Apophis)
-        const delBtn = new St.Button({
-            child: glyph(this._ext, 'blade', 16),
-            accessible_name: 'Delete task',
-            reactive: true, track_hover: true,
-        });
-        delBtn.add_style_class_name('gnome-todo-icon-btn');
-        delBtn.add_style_class_name('gnome-todo-icon-delete');
-        delBtn.connect('clicked', () => this._deleteTask(task));
-        actions.add_child(delBtn);
-
+        actions.add_child(this._rowButton(glyph(this._ext, 'pen', 16),
+            'Edit task', 'ankhdo-icon-edit', () => this._startEdit(task)));
+        actions.add_child(this._rowButton(glyph(this._ext, 'blade', 16),
+            'Delete task', 'ankhdo-icon-delete', () => this._deleteTask(task)));
         row.add_child(actions);
 
-        // Reveal controls only while the row is hovered. The elapsed-time
-        // label stays visible for a running task so time reads at a glance.
-        // Reveal controls on hover. Toggling `visible` (not opacity) collapses
-        // their space, so a running task's time label sits flush at the right
-        // edge instead of floating mid-row. The label stays shown for a running
-        // task; idle rows reveal it with the rest.
+        // Controls appear on hover or keyboard focus. They are hidden with
+        // `visible` so their space collapses and the time sits flush right;
+        // the row's min-height keeps its height from changing. Running and
+        // finished tasks keep their time visible at rest.
         const revealables = [actions];
         if (timerBtn) revealables.push(timerBtn);
-        // Idle (not-done) rows reveal their time on hover; a done task's final
-        // count stays visible at rest.
         if (timerLbl && !task.running && !task.done) revealables.push(timerLbl);
-        // Revealed by mouse hover or keyboard focus alike.
         let focused = false;
         const syncRevealed = () => {
             const shown = item.hover || focused;
@@ -920,16 +821,15 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         this._taskSection.addMenuItem(item);
     }
 
-    // ── Drag to reorder ─────────────────────────────────────────────────
     _onMenuCapture(event) {
         const type = event.type();
 
-        // Focus rings only while navigating by keyboard (St has no :focus-visible;
-        // hovering a menu item also gives it key focus).
+        // Focus rings only while using the keyboard: St has no :focus-visible,
+        // and hovering a menu item also gives it key focus.
         if (type === Clutter.EventType.KEY_PRESS)
-            this.menu.box.add_style_class_name('gnome-todo-kbd-nav');
+            this.menu.box.add_style_class_name('ankhdo-kbd-nav');
         else if (type === Clutter.EventType.MOTION)
-            this.menu.box.remove_style_class_name('gnome-todo-kbd-nav');
+            this.menu.box.remove_style_class_name('ankhdo-kbd-nav');
 
         // Connected before the shell's menu manager (which closes the whole menu
         // on Escape), so Escape can first back out of an edit or a confirmation.
@@ -966,7 +866,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         if (type === Clutter.EventType.MOTION) {
             const dy = event.get_coords()[1] - this._drag.startY;
             if (!this._drag.active) {
-                if (Math.abs(dy) < 6) return Clutter.EVENT_PROPAGATE;
+                if (Math.abs(dy) < DRAG_THRESHOLD) return Clutter.EVENT_PROPAGATE;
                 this._startDrag();
             }
             this._dragTo(dy);
@@ -1010,11 +910,10 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         d.maxDy = d.tops[last] + d.heights[last] - d.heights[d.idx] - d.tops[d.idx];
         d.shift = items.map(() => 0);
 
-        // Rows paint in list order, so the row itself would slide under later
-        // rows. Drag a clone floating above the menu; the original stays as the
-        // (invisible) gap. A clone paints its source at the clone's opacity.
-        // Read geometry before restyling: a style change invalidates the
-        // allocation and the size getters would fall back to preferred size.
+        // Rows paint in list order, so a moved row would slide under later
+        // rows. Instead a clone floats above the menu and the original, made
+        // transparent, stays as the gap (a clone paints at its own opacity).
+        // Geometry is read before restyling, which invalidates the allocation.
         const item = items[d.idx];
         const [x, y] = item.get_transformed_position();
         const box = item.get_allocation_box();
@@ -1022,7 +921,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
         d.clone = new Clutter.Clone({ source: item, reactive: false });
         d.clone.set_position(x, y);
         d.clone.set_size(box.get_width(), box.get_height());
-        item.add_style_class_name('gnome-todo-row-dragging');
+        item.add_style_class_name('ankhdo-row-dragging');
         Main.uiGroup.add_child(d.clone);
         item.opacity = 0;
         global.display.set_cursor(CURSOR_GRABBING);
@@ -1061,7 +960,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
                 item.remove_all_transitions();
                 item.translation_y = 0;
                 item.opacity = 255;
-                item.remove_style_class_name('gnome-todo-row-dragging');
+                item.remove_style_class_name('ankhdo-row-dragging');
             }
             global.display.set_cursor(Meta.Cursor.DEFAULT);
         }
@@ -1071,12 +970,12 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     _buildEditRow(task) {
         const item = new PopupMenu.PopupBaseMenuItem({ reactive: false });
         item.style = 'padding:8px 14px;';
-        item.add_style_class_name('gnome-todo-edit-shell');
+        item.add_style_class_name('ankhdo-edit-shell');
         const row = new St.BoxLayout({ vertical: false, x_expand: true });
 
         const entry = new St.Entry({
             text: task.title, can_focus: true, x_expand: true,
-            style_class: 'gnome-todo-edit-entry',
+            style_class: 'ankhdo-edit-entry',
         });
         entry.clutter_text.set_max_length(MAX_TITLE_LEN);
         const commit = () => {
@@ -1092,7 +991,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const saveBtn = new St.Button({
             label: 'Seal',
-            style_class: 'gnome-todo-save-btn',
+            style_class: 'ankhdo-save-btn',
             reactive: true, track_hover: true,
         });
         saveBtn.connect('clicked', commit);
@@ -1100,7 +999,7 @@ class GnomeTodoIndicator extends PanelMenu.Button {
 
         const cancelBtn = new St.Button({
             label: 'Cancel',
-            style_class: 'gnome-todo-cancel-btn',
+            style_class: 'ankhdo-cancel-btn',
             reactive: true, track_hover: true,
         });
         cancelBtn.connect('clicked', () => { this._editRowId = null; this._buildMenu(); });
@@ -1137,9 +1036,9 @@ class GnomeTodoIndicator extends PanelMenu.Button {
     }
 });
 
-export default class GnomeTodoExtension extends Extension {
+export default class AnkhDoExtension extends Extension {
     enable() {
-        this._ind = new GnomeTodoIndicator(this);
+        this._ind = new AnkhDoIndicator(this);
         Main.panel.addToStatusArea(this.uuid, this._ind);
     }
     disable() {

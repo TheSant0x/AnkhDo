@@ -2,7 +2,7 @@
    done, stopwatch timer, copy, edit, delete (with undo), drag to reorder,
    keyboard control, and clear completed. */
 
-const MAX_TITLE_LEN = 120;   // cap on a task's text length
+const MAX_TITLE_LEN = 120;
 const UNDO_SECONDS = 6;
 const DRAG_THRESHOLD = 6;    // px of movement before a press becomes a drag
 
@@ -119,8 +119,8 @@ function render() {
   $bottom.innerHTML = (undo ? undoHTML() : '') + (confirmingClear ? confirmHTML() : addRowHTML());
   wireBottom();
 
-  // Focus follows the work: the edit field while editing, a task row after a
-  // keyboard action, otherwise the add field so you can keep typing tasks.
+  // Focus: the edit field while editing, a row after a keyboard action,
+  // otherwise the add field so several tasks can be typed in a row.
   const editInput = document.querySelector('.edit-shell input');
   if (editInput) { editInput.focus(); editInput.select(); return; }
   if (focusTaskId !== null) {
@@ -213,7 +213,7 @@ function wireBottom() {
     if (!title) return;
     tasks.unshift({ id: nextId(), title, done: false, elapsedSeconds: 0, running: false, startedAt: null });
     persist();
-    render(); // re-focuses the (now empty) add field, ready for the next task
+    render();
   });
   const editInput = document.querySelector('.edit-shell input');
   editInput?.addEventListener('keydown', e => {
@@ -229,7 +229,7 @@ function toggleDone(t) {
 }
 
 function toggleTimer(t) {
-  if (t.done) return; // a completed task's timer never runs
+  if (t.done) return;
   if (t.running) { t.elapsedSeconds = liveElapsed(t); t.running = false; t.startedAt = null; }
   else { t.running = true; t.startedAt = Date.now(); }
   persist(); render();
@@ -357,8 +357,6 @@ function onRowKey(e, t, row) {
 }
 
 // ── Drag to reorder ──────────────────────────────────────────────────────
-// Press anywhere on a row except its buttons, move past the threshold, and
-// the row follows the pointer while the others slide aside.
 $list.addEventListener('pointerdown', e => {
   if (e.button !== 0 || editingId !== null) return;
   const row = e.target.closest('.row');

@@ -1,10 +1,19 @@
-Ankh Do is a small to-do list that lives in your browser toolbar.
+Ankh Do is a simple to-do list and task manager that lives in your browser toolbar. Click the icon, type a task, press Enter. That's it.
 
-Click the ankh, type a task and press Enter. Check things off as you go. If you want to know how long something takes, start its timer. It keeps counting even when the popup is closed.
+Keep track of what you need to do without opening a new tab or signing up for anything. Check tasks off as you finish them, and use the built-in task timer to see how long each one takes. The timer keeps running even when the popup is closed, so it works for time tracking too.
 
-You can drag tasks to change their order, edit them in place, copy their text, or delete them. If you delete one by accident, there's an Undo button for a few seconds. A badge on the toolbar icon shows how many tasks are still open.
+Features:
+• Quick to-do list: add a task and press Enter, then add the next one
+• Checklist: mark tasks done with one click
+• Task timer: start and pause a stopwatch on any task
+• Drag and drop to reorder tasks and set priorities
+• Edit a task in place, copy its text, or delete it, with Undo if you change your mind
+• Badge on the toolbar icon shows how many tasks are still open
+• Clear all completed tasks in one step
+• Dark theme and a light off-white theme, chosen in Options
+• Full keyboard shortcuts
 
-Everything works from the keyboard too:
+Keyboard shortcuts:
 Up/Down: move between tasks
 Alt+Up/Down: move a task up or down
 Space: mark as done
@@ -14,6 +23,8 @@ C: copy
 Delete: delete
 Esc: cancel or close
 
-Prefer a light look? Turn on the off-white theme in Options.
+A calm, pharaonic design: gold and papyrus on black basalt, with an ankh in your toolbar.
 
-Your tasks are saved locally in your browser and never leave your computer. The extension doesn't connect to the internet and collects no data.
+Private by design: your tasks are saved locally in your browser and never leave your computer. No account, no sign-up, no internet connection, and no data collection.
+
+Great for daily planning, work tasks, study, shopping lists, and anything you want to get done.

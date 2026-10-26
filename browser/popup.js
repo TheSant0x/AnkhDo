@@ -1,4 +1,4 @@
-/* Ankh Do — Chrome popup logic. Mirrors the GNOME extension: tasks with
+/* Ankh Do — browser popup logic. Mirrors the GNOME extension: tasks with
    done, stopwatch timer, copy, edit, delete (with undo), drag to reorder,
    keyboard control, and clear completed. */
 
@@ -10,19 +10,22 @@ const DRAG_THRESHOLD = 6;    // px of movement before a press becomes a drag
 let _idSeq = 0;
 const nextId = () => Date.now() * 1000 + (_idSeq++ % 1000);
 
-// ── Storage (chrome.storage.local, with a localStorage fallback) ──────────
+// Firefox exposes `browser`; Chromium browsers expose `chrome`.
+const ext = globalThis.browser ?? globalThis.chrome;
+
+// ── Storage (extension storage, with a localStorage fallback) ──────────
 const store = {
   async load() {
     try {
-      if (chrome?.storage?.local) {
-        const o = await chrome.storage.local.get('tasks');
+      if (ext?.storage?.local) {
+        const o = await ext.storage.local.get('tasks');
         return normalize(o.tasks);
       }
     } catch {}
     try { return normalize(JSON.parse(localStorage.getItem('tasks'))); } catch { return []; }
   },
   save(tasks) {
-    try { chrome?.storage?.local?.set({ tasks }); } catch {}
+    try { ext?.storage?.local?.set({ tasks }); } catch {}
     try { localStorage.setItem('tasks', JSON.stringify(tasks)); } catch {}
   },
 };
@@ -42,12 +45,12 @@ function normalize(arr) {
 const applyTheme = light => document.body.classList.toggle('light', !!light);
 async function loadTheme() {
   try {
-    if (globalThis.chrome?.storage?.local)
-      return !!(await chrome.storage.local.get('lightTheme')).lightTheme;
+    if (ext?.storage?.local)
+      return !!(await ext.storage.local.get('lightTheme')).lightTheme;
   } catch {}
   try { return localStorage.getItem('lightTheme') === 'true'; } catch { return false; }
 }
-globalThis.chrome?.storage?.onChanged?.addListener((changes, area) => {
+ext?.storage?.onChanged?.addListener((changes, area) => {
   if (area === 'local' && changes.lightTheme) applyTheme(changes.lightTheme.newValue);
 });
 

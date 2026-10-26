@@ -1,4 +1,4 @@
-/* Ankh Do — Pharaonic theme (Chrome popup). Mirrors the GNOME extension.
+/* Ankh Do — Pharaonic theme (browser popup). Mirrors the GNOME extension.
  * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
  * text, ~10% accents. Colour marks state; everything at rest is neutral.
  *   gold       the gods' flesh      → brand (ankh + title)
@@ -50,8 +50,9 @@ button{font-family:inherit}
 }
 
 /* ── List ───────────────────────────────────────────────── */
-/* Grows with its tasks, scrolls past the cap (Chrome popups max out at 600px). */
-.list{position:relative; max-height:440px; overflow-y:auto; padding:4px 6px}
+/* Grows with its tasks, scrolls past the cap (browser popups max out at 600px). */
+.list{position:relative; max-height:440px; overflow-y:auto; padding:4px 6px;
+  scrollbar-width:thin; scrollbar-color:rgba(111,154,224,.22) transparent}
 .list::-webkit-scrollbar{width:8px}
 .list::-webkit-scrollbar-thumb{background:rgba(111,154,224,.22); border-radius:8px}
 
@@ -228,8 +229,10 @@ body.light{
   --cream:#2B2418;
   --ring:#8F846E; --slate:#6A6252; --muted:#736A58; --done-text:#8E8573;
 }
+html:has(> body.light){background:#F2EBDC}
 body.light .header{border-bottom-color:rgba(43,36,24,.10)}
 body.light .header-count{background:rgba(44,91,170,.09); border-color:rgba(44,91,170,.25)}
+body.light .list{scrollbar-color:rgba(43,36,24,.18) transparent}
 body.light .list::-webkit-scrollbar-thumb{background:rgba(43,36,24,.18)}
 body.light .row:hover, body.light .row:focus{background:rgba(43,36,24,.05)}
 body.light .row:focus-visible{box-shadow:inset 0 0 0 1px rgba(44,91,170,.55)}

@@ -1,14 +1,15 @@
 <div align="center">
 
-<img src="chrome/icons/ankhdo-128.png" alt="" width="96">
+<img src="browser/icons/ankhdo-128.png" alt="" width="96">
 
 # Ankh Do
 
-**A pharaonic to-do list for your GNOME top bar and your Chrome toolbar.**<br>
+**A pharaonic to-do list for your GNOME top bar and your browser toolbar.**<br>
 Drag deeds into order, time them, undo mistakes — under a tomb-ceiling sky of lapis and gold.
 
 ![GNOME Shell 45–48](https://img.shields.io/badge/GNOME_Shell-45–48-4A86CF?logo=gnome&logoColor=white)
-![Chrome MV3](https://img.shields.io/badge/Chrome-Manifest_V3-E2B957?logo=googlechrome&logoColor=white)
+![Firefox](https://img.shields.io/badge/Firefox-140+-E2B957?logo=firefoxbrowser&logoColor=white)
+![Chrome · Brave · Edge](https://img.shields.io/badge/Chrome_·_Brave_·_Edge-Manifest_V3-E2B957?logo=googlechrome&logoColor=white)
 ![License](https://img.shields.io/badge/license-GPL--2.0--or--later-6F9AE0)
 ![No tracking](https://img.shields.io/badge/data-stays_on_your_machine-5FB98A)
 
@@ -23,7 +24,8 @@ shortcuts:
 
 - **GNOME Shell** — a white ankh with your open-task count in the top bar,
   sitting with the system indicators. Click it for the menu.
-- **Chrome** — a gold-on-lapis ankh in the toolbar with a badge counting open
+- **Firefox, Chrome, Brave, Edge** (and other Chromium browsers): a gold-on-lapis
+  ankh in the toolbar with a badge counting open
   tasks. Click it for the popup.
 
 Each keeps its own list; they don't sync.
@@ -78,7 +80,8 @@ add a task. Press <kbd>↑</kbd> to move into the list.
 
 - **GNOME:** open **Extensions → Ankh Do → Settings**, or run
   `gnome-extensions prefs ankh-do@thesant0x.github.io`.
-- **Chrome:** right-click the ankh in the toolbar and choose **Options**.
+- **Browsers:** right-click the ankh in the toolbar and choose **Options**
+  (in Firefox: **Manage Extension → Options**).
 
 - **Off-white theme**: a light papyrus ground with ink text, instead of night
   lapis. Accents keep their meanings in deeper shades so they stay readable.
@@ -105,10 +108,19 @@ extension inside it:
 dbus-run-session -- gnome-shell --nested --wayland
 ```
 
-### Chrome
+### Firefox
 
-1. Open `chrome://extensions` and turn on **Developer mode**.
-2. Click **Load unpacked** and choose the `chrome/` folder.
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on** and choose `browser/manifest.json`.
+
+Temporary add-ons are removed when Firefox closes; for a permanent install,
+use the signed version from addons.mozilla.org (see publishing below).
+
+### Chrome, Brave, Edge and other Chromium browsers
+
+1. Open the extensions page (`chrome://extensions`, `brave://extensions`,
+   `edge://extensions`) and turn on **Developer mode**.
+2. Click **Load unpacked** and choose the `browser/` folder.
 3. Pin Ankh Do from the puzzle-piece menu so the ankh stays in the toolbar.
 
 After pulling changes, click the reload icon on the extension's card.
@@ -120,7 +132,7 @@ collects anything.
 
 - **GNOME:** `~/.config/scroll-of-deeds/tasks.json` — outside the extension
   folder, so updates never erase it.
-- **Chrome:** `chrome.storage.local`, scoped to your browser profile. The only
+- **Browsers:** the extension's local storage, scoped to your browser profile. The only
   permission requested is `storage`.
 
 ## Design
@@ -162,22 +174,36 @@ shexli ankh-do@thesant0x.github.io.shell-extension.zip
 
 The site assigns version numbers, so `metadata.json` needs no bump.
 
-### Chrome → Chrome Web Store
+### Browser extension
+
+One folder serves every browser. Build the package:
 
 ```bash
-cd chrome && zip -r ../ankh-do-chrome.zip . -x '*.DS_Store'
+cd browser && zip -r ../ankh-do-browser.zip . -x '*.DS_Store'
 ```
 
-1. Register at the [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-   (one-time US$5 fee).
-2. **Add new item** and upload `ankh-do-chrome.zip`.
-3. Listing: name **Ankh Do**, category **Productivity**, icon
-   `chrome/icons/ankhdo-128.png`, and at least one 1280×800 screenshot.
-4. Privacy: single purpose "a to-do list manager"; `storage` is used only to
-   save tasks locally; no data is collected. The store also requires a privacy
-   policy URL — a one-line page saying exactly that is enough.
+**Firefox → addons.mozilla.org.** Upload `ankh-do-browser.zip` at the
+[Developer Hub](https://addons.mozilla.org/developers/). Check it first with
+Mozilla's linter:
 
-Bump `version` in `chrome/manifest.json` for every store update.
+```bash
+npx web-ext lint --source-dir browser
+```
+
+**Chrome Web Store** (Brave and other Chromium browsers install from here
+too): register at the
+[Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+(one-time US$5 fee), add a new item, and upload the same zip. Listing: name
+**Ankh Do**, category **Productivity**, icon `browser/icons/ankhdo-128.png`,
+and at least one 1280×800 screenshot. For privacy: the single purpose is "a
+to-do list manager", `storage` only saves tasks locally, and no data is
+collected. The store also asks for a privacy policy URL; a one-line page saying
+exactly that is enough.
+
+**Edge Add-ons:** upload the same zip at the
+[Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/).
+
+Bump `version` in `browser/manifest.json` for every store update.
 
 ## Project layout
 
@@ -186,13 +212,13 @@ extension.js          GNOME: indicator, menu, tasks, timers, drag, keyboard, sto
 stylesheet.css        GNOME: the theme
 metadata.json         GNOME: UUID, name, supported shell versions
 icons/                GNOME: glyphs (*-symbolic.svg) and CREDITS.txt
-chrome/
-  manifest.json       Chrome: Manifest V3
-  popup.html/.css/.js Chrome: the popup
-  options.html/.css/.js Chrome: the settings page
-  bg.js               Chrome: keeps the toolbar badge's count current
-  glyphs.js           Chrome: the shared glyphs as inline SVG
-  icons/              Chrome: toolbar icons, 16–128 px
+browser/              Firefox, Chrome, Brave, Edge (one Manifest V3 extension)
+  manifest.json
+  popup.html/.css/.js   the popup
+  options.html/.css/.js the settings page
+  bg.js                 keeps the toolbar badge's count current
+  glyphs.js             the shared glyphs as inline SVG
+  icons/                toolbar icons, 16–128 px
 screenshots/          images for this README
 ```
 
@@ -202,5 +228,5 @@ Code is licensed **GPL-2.0-or-later** — see [`LICENSE`](LICENSE) and
 [`COPYING`](COPYING). Most glyphs are derived from
 [game-icons.net](https://game-icons.net) by **Lorc** and **Delapouite** under
 [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The panel ankh, the
-Chrome toolbar icons and the drag grip are original work released under CC0. Per-file attribution is in
+browser toolbar icons and the drag grip are original work released under CC0. Per-file attribution is in
 [`icons/CREDITS.txt`](icons/CREDITS.txt).

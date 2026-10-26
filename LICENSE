@@ -16,9 +16,9 @@ The full text of the GNU General Public License version 2 is in COPYING.
 
 --------------------------------------------------------------------------------
 Bundled assets
-Most pharaonic glyphs (icons/*-symbolic.svg and chrome/glyphs.js) are derived
+Most pharaonic glyphs (icons/*-symbolic.svg and browser/glyphs.js) are derived
 from game-icons.net (Lorc & Delapouite) and licensed CC BY 3.0
 <https://creativecommons.org/licenses/by/3.0/>. The panel ankh
-(icons/ankh-panel-symbolic.svg), the Chrome toolbar icons (chrome/icons/), and
+(icons/ankh-panel-symbolic.svg), the browser toolbar icons (browser/icons/), and
 the drag grip are original work, released under CC0. See icons/CREDITS.txt
 for per-file attribution.

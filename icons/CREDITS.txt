@@ -27,9 +27,9 @@ Authors: Lorc & Delapouite — https://game-icons.net
                                  grid for the top bar, released CC0.
   grip-symbolic.svg            — original work (drag grip), released CC0.
 
---- Chrome extension (chrome/) ---
-  chrome/glyphs.js      — the glyphs above as inline SVG (same sources and
+--- Browser extension (browser/) ---
+  browser/glyphs.js      — the glyphs above as inline SVG (same sources and
                           licences).
-  chrome/icons/          — original work, released CC0: ankhdo.svg (source)
+  browser/icons/          — original work, released CC0: ankhdo.svg (source)
                            draws the large icon (48/128 px); 16/32 px use the
                            pixel-grid panel ankh. Gold on a lapis tile.

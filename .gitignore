@@ -8,8 +8,8 @@ tasks.json
 .DS_Store
 Thumbs.db
 
-# Chrome package (built from chrome/)
-ankh-do-chrome.zip
+# Browser extension package (built from browser/)
+ankh-do-browser.zip
 
 # compiled locally for the symlinked dev install
 schemas/gschemas.compiled

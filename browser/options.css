@@ -1,8 +1,8 @@
 /* Ankh Do — options page. Uses the same two palettes as the popup. */
 :root{
-  --bg:#141829; --card:#1A1F35; --line:rgba(111,154,224,.22);
-  --text:#EAD9B0; --sub:#A3ABC6; --gold:#E8C56A;
-  --track:#3A4262; --track-on:#45C4B0; --knob:#F4ECD8;
+  --bg:#171513; --card:#211E1A; --line:rgba(234,217,176,.10);
+  --text:#EAD9B0; --sub:#B3AA96; --gold:#E8C56A;
+  --track:#4A443A; --track-on:#45C4B0; --knob:#F4ECD8;
 }
 body.light{
   --bg:#F2EBDC; --card:#FBF7EE; --line:rgba(43,36,24,.12);
@@ -10,8 +10,8 @@ body.light{
   --track:#CFC6B2; --track-on:#0A7368; --knob:#FFFFFF;
 }
 *{box-sizing:border-box; margin:0; padding:0}
-html{background:#141829}
-html:has(> body.light){background:#F2EBDC}
+html{background:#171513}
+html:has(> body.light){background:#F6F0E4}
 body{
   background:var(--bg); color:var(--text);
   font-family:system-ui,-apple-system,"Segoe UI",Cantarell,sans-serif;

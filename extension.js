@@ -12,7 +12,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 // Strikethrough colour for finished titles, set in Pango markup (not CSS).
-const DONE_TEXT = '#7A84A3';
+const DONE_TEXT = '#857C6B';
 const DONE_TEXT_LIGHT = '#8E8573';
 
 // Tasks live in the config dir, not the extension folder, which is replaced
@@ -224,13 +224,10 @@ class AnkhDoIndicator extends PanelMenu.Button {
     // plain rectangle that also covers the margin around the rounded bubble.
     _applyTheme() {
         const light = this._light;
-        const [top, bottom, border] = light
-            ? ['#FBF7EE', '#F2EBDC', 'rgba(110,90,50,0.22)']
-            : ['#171B2E', '#10131F', 'rgba(111,154,224,0.28)'];
-        this.menu.box.style = `width:${MENU_WIDTH}px;` +
-            'background-gradient-direction:vertical;' +
-            `background-gradient-start:${top};background-gradient-end:${bottom};` +
-            `border-color:${border};`;
+        const [ground, border] = light
+            ? ['#F6F0E4', 'rgba(110,90,50,0.22)']
+            : ['#171513', 'rgba(232,197,106,0.16)'];
+        this.menu.box.style = `width:${MENU_WIDTH}px;background-color:${ground};border-color:${border};`;
         if (light) this.menu.actor.add_style_class_name('ankhdo-light');
         else this.menu.actor.remove_style_class_name('ankhdo-light');
     }

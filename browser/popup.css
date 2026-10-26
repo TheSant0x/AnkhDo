@@ -1,5 +1,5 @@
 /* Ankh Do — Pharaonic theme (browser popup). Mirrors the GNOME extension.
- * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
+ * ~60% basalt ground (black granite, Egyptian *kem*), ~30% papyrus-cream
  * text, ~10% accents. Colour marks state; everything at rest is neutral.
  *   gold       the gods' flesh      → brand (ankh + title)
  *   turquoise  Hathor's faience     → toolbar badge · running task
@@ -11,7 +11,7 @@
  * Accents on buttons appear only on hover, where the action is about to happen.
  */
 :root{
-  --bg-top:#171B2E; --bg-bottom:#10131F; --surface:#1C2136; --surface-hi:#20263D;
+  --bg-top:#171513; --bg-bottom:#171513; --surface:#211E1A; --surface-hi:#26221D;
   --gold:#E8C56A;
   --turquoise:#45C4B0; --turquoise-hi:#6FDCCB;
   --lapis:#6F9AE0; --lapis-hi:#9DBEF0;
@@ -19,10 +19,10 @@
   --silver:#C3CCE0; --carnelian:#E0654B; --carnelian-hi:#F08063;
   --ochre:#E89A4F; --ochre-hi:#F2B57A;
   --cream:#EAD9B0;
-  --ring:#5E6A95;       /* resting checkbox ring */
-  --slate:#A3ABC6;      /* resting icons, secondary text */
-  --muted:#8790AE;      /* timers, hints */
-  --done-text:#7A84A3;  /* finished titles recede */
+  --ring:#786F60;       /* resting checkbox ring */
+  --slate:#B3AA96;      /* resting icons, secondary text */
+  --muted:#968C79;      /* timers, hints */
+  --done-text:#857C6B;  /* finished titles recede */
 }
 *{box-sizing:border-box; margin:0; padding:0}
 html,body{background:var(--bg-bottom)}
@@ -39,7 +39,7 @@ button{font-family:inherit}
 /* ── Header ─────────────────────────────────────────────── */
 .header{
   display:flex; align-items:center; gap:9px;
-  padding:12px 16px 10px; border-bottom:1px solid rgba(111,154,224,.22);
+  padding:12px 16px 10px; border-bottom:1px solid rgba(234,217,176,.09);
 }
 .header-emblem{width:20px; height:20px; color:var(--gold)}
 .header-title{font-weight:800; color:var(--gold); font-size:13px}
@@ -80,7 +80,7 @@ button{font-family:inherit}
 
 .row.dragging{
   position:relative; z-index:2; transition:background .15s ease;
-  background:#222A45; box-shadow:inset 0 0 0 1px rgba(111,154,224,.70);
+  background:#2A2620; box-shadow:inset 0 0 0 1px rgba(111,154,224,.70);
 }
 body.dragging, body.dragging *{cursor:grabbing !important}
 
@@ -101,7 +101,7 @@ body.dragging, body.dragging *{cursor:grabbing !important}
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:default;
 }
 .row.done .title{color:var(--done-text); text-decoration:line-through;
-  text-decoration-color:rgba(122,132,163,.8)}
+  text-decoration-color:rgba(133,124,107,.8)}
 
 /* timer: the counter sits flush right at rest; its button appears on hover */
 .timer{display:flex; align-items:center; gap:4px; flex:0 0 auto}
@@ -137,7 +137,7 @@ body.dragging, body.dragging *{cursor:grabbing !important}
 .empty p{margin-top:4px; font-size:12px; color:var(--muted)}
 
 /* ── Bottom ─────────────────────────────────────────────── */
-.sep{height:1px; background:rgba(111,154,224,.16); margin:0 16px}
+.sep{height:1px; background:rgba(234,217,176,.09); margin:0 16px}
 .bottom{padding:0 14px 14px}
 
 /* Undo bar (after deleting a task) */
@@ -156,12 +156,12 @@ body.dragging, body.dragging *{cursor:grabbing !important}
 /* The scarab in lapis, as in royal jewellery. */
 .input-shell{
   flex:1 1 auto; display:flex; align-items:center; gap:18px;
-  background:var(--surface); border:1px solid rgba(111,154,224,.30);
+  background:var(--surface); border:1px solid rgba(232,197,106,.18);
   min-height:52px; border-radius:10px; padding:8px 12px 8px 14px;
   transition:border-color .15s ease, background .15s ease;
 }
 /* The field is always focused, so only hover brightens it (as in GNOME). */
-.input-shell:hover{border-color:rgba(111,154,224,.60); background:var(--surface-hi)}
+.input-shell:hover{border-color:rgba(232,197,106,.34); background:var(--surface-hi)}
 .input-shell .scarab{width:18px; height:18px; color:var(--lapis)}
 .input-shell input{
   flex:1 1 auto; min-width:0; background:none; border:none; outline:none;
@@ -193,7 +193,7 @@ body.dragging, body.dragging *{cursor:grabbing !important}
 
 .btn{border:none; cursor:pointer; font-weight:700; border-radius:8px;
   transition:background .15s ease, color .15s ease}
-.btn.seal{font-size:12px; color:#151A2B; background:var(--silver); padding:6px 16px}
+.btn.seal{font-size:12px; color:#171513; background:var(--silver); padding:6px 16px}
 .btn.seal:hover{background:#DDE3F0}
 .btn.ghost{font-size:12px; color:var(--slate); background:transparent; padding:6px 12px}
 .btn.ghost:hover{color:var(--cream); background:rgba(234,217,176,.08)}
@@ -219,7 +219,7 @@ body.dragging, body.dragging *{cursor:grabbing !important}
    deeper shades (text ≥ 4.5:1, controls ≥ 3:1).
    ══════════════════════════════════════════════════════════ */
 body.light{
-  --bg-top:#FBF7EE; --bg-bottom:#F2EBDC; --surface:#FFFDF8; --surface-hi:#FFFFFF;
+  --bg-top:#F6F0E4; --bg-bottom:#F6F0E4; --surface:#FFFDF8; --surface-hi:#FFFFFF;
   --gold:#8A6510;
   --turquoise:#0A7368; --turquoise-hi:#075C53;
   --lapis:#2C5BAA; --lapis-hi:#224A8C;
@@ -229,7 +229,7 @@ body.light{
   --cream:#2B2418;
   --ring:#8F846E; --slate:#6A6252; --muted:#736A58; --done-text:#8E8573;
 }
-html:has(> body.light){background:#F2EBDC}
+html:has(> body.light){background:#F6F0E4}
 body.light .header{border-bottom-color:rgba(43,36,24,.10)}
 body.light .header-count{background:rgba(44,91,170,.09); border-color:rgba(44,91,170,.25)}
 body.light .list{scrollbar-color:rgba(43,36,24,.18) transparent}

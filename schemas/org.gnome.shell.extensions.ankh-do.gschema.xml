@@ -4,7 +4,7 @@
     <key name="light-theme" type="b">
       <default>false</default>
       <summary>Off-white theme</summary>
-      <description>Show the menu in a light, papyrus-coloured theme instead of night lapis.</description>
+      <description>Show the menu in a light, papyrus-coloured theme instead of black basalt.</description>
     </key>
   </schema>
 </schemalist>

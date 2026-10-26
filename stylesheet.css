@@ -1,5 +1,5 @@
 /* Ankh Do — Pharaonic theme
- * ~60% night-lapis ground (a tomb ceiling: Nut's sky), ~30% papyrus-cream
+ * ~60% basalt ground (black granite, Egyptian *kem*), ~30% papyrus-cream
  * text, ~10% accents. Colour marks state; everything at rest is neutral.
  * Each accent is a material the Egyptians used, given the matching job:
  *   gold       #E8C56A  the gods' flesh      → brand (ankh + title)
@@ -10,7 +10,7 @@
  *   carnelian  #E0654B  desher: chaos        → delete
  *   ochre      #E89A4F  sunset in the West   → clear completed
  *   cream      #EAD9B0  papyrus              → text
- *   slate      #5E6A95 / #A3ABC6 / #7A84A3   → resting rings · resting icons · done text
+ *   slate      #786F60 / #B3AA96 / #857C6B   → resting rings · resting icons · done text
  * Accents on buttons appear only on hover, where the action is about to happen.
  */
 
@@ -32,6 +32,7 @@
 }
 
 /* ── Menu frame ───────────────────────────────────────────────────── */
+/* The ground itself is set inline in _applyTheme(). */
 /* No shell drop shadow: it is drawn square behind our rounded menu and
    reads as a dark frame around it. */
 .popup-menu-boxpointer.ankhdo-menu,
@@ -43,7 +44,7 @@
 .ankhdo-header {
     padding: 12px 16px 10px 16px;
     spacing: 9px;
-    border-bottom: 1px solid rgba(111, 154, 224, 0.22);
+    border-bottom: 1px solid rgba(234, 217, 176, 0.09);
 }
 
 .ankhdo-header-emblem {
@@ -80,7 +81,7 @@
 
 .ankhdo-empty-hint {
     font-size: 12px;
-    color: #8790AE;
+    color: #968C79;
     padding-top: 4px;
 }
 
@@ -118,11 +119,11 @@
 }
 
 .ankhdo-grip {
-    color: #8790AE;
+    color: #968C79;
 }
 
 .ankhdo-grip:hover {
-    color: #C3CCE0;
+    color: #D8CFBA;
 }
 
 /* ── Title ────────────────────────────────────────────────────────── */
@@ -134,7 +135,7 @@
 }
 
 .ankhdo-title-done {
-    color: #7A84A3;
+    color: #857C6B;
 }
 
 /* ── Checkbox ─────────────────────────────────────────────────────── */
@@ -146,7 +147,7 @@
     min-height: 22px;
     padding: 0;
     border-radius: 11px;
-    border: 2px solid #5E6A95;
+    border: 2px solid #786F60;
     background-color: transparent;
     transition-duration: 150ms;
 }
@@ -174,7 +175,7 @@
 .ankhdo-timer-label {
     font-size: 11px;
     font-weight: 700;
-    color: #8790AE;
+    color: #968C79;
     min-width: 58px;
     text-align: right;
 }
@@ -197,7 +198,7 @@
 
 /* Buttons are slate at rest and take their colour only on hover. */
 .ankhdo-row .ankhdo-icon-btn {
-    color: #A3ABC6;
+    color: #B3AA96;
     background-color: transparent;
 }
 
@@ -246,7 +247,7 @@
 .ankhdo-row.ankhdo-row-dragging,
 .ankhdo-row.ankhdo-row-dragging:hover,
 .ankhdo-row.ankhdo-row-dragging:focus {
-    background-color: #222A45;
+    background-color: #2A2620;
     box-shadow: inset 0 0 0 1px rgba(111, 154, 224, 0.70);
 }
 
@@ -256,8 +257,8 @@
 }
 
 .ankhdo-input-shell {
-    background-color: #1C2136;
-    border: 1px solid rgba(111, 154, 224, 0.30);
+    background-color: #211E1A;
+    border: 1px solid rgba(232, 197, 106, 0.18);
     border-radius: 10px;
     padding: 8px 12px;
     spacing: 8px;
@@ -265,8 +266,8 @@
 }
 
 .ankhdo-input-shell:hover {
-    border-color: rgba(111, 154, 224, 0.60);
-    background-color: #20263D;
+    border-color: rgba(232, 197, 106, 0.34);
+    background-color: #26221D;
 }
 
 .ankhdo-entry {
@@ -288,7 +289,7 @@
 }
 
 .ankhdo-input-shell .ankhdo-entry StLabel.hint-text {
-    color: #8790AE !important;
+    color: #968C79 !important;
 }
 
 /* ── Edit-in-place row ────────────────────────────────────────────── */
@@ -300,7 +301,7 @@
 .ankhdo-edit-shell .ankhdo-edit-entry,
 .ankhdo-edit-shell .ankhdo-edit-entry:hover,
 .ankhdo-edit-shell .ankhdo-edit-entry:focus {
-    background-color: #1C2136 !important;
+    background-color: #211E1A !important;
     border: 1px solid rgba(195, 204, 224, 0.45) !important;
     border-radius: 8px;
     padding: 7px 11px;
@@ -317,14 +318,14 @@
 }
 
 .ankhdo-edit-shell .ankhdo-edit-entry StLabel.hint-text {
-    color: #8790AE !important;
+    color: #968C79 !important;
 }
 
 /* ── Buttons: seal / cancel / clear / confirm ─────────────────────── */
 .ankhdo-save-btn {
     font-size: 12px;
     font-weight: 700;
-    color: #151A2B;
+    color: #171513;
     background-color: #C3CCE0;
     border: none;
     border-radius: 8px;
@@ -340,7 +341,7 @@
 .ankhdo-cancel-btn {
     font-size: 12px;
     font-weight: 700;
-    color: #A3ABC6;
+    color: #B3AA96;
     background: none;
     border: none;
     padding: 6px 12px;
@@ -359,7 +360,7 @@
     padding: 0 12px;
     margin-left: 8px;
     border-radius: 10px;
-    color: #A3ABC6;
+    color: #B3AA96;
     background-color: rgba(234, 217, 176, 0.04);
     border: 1px solid rgba(234, 217, 176, 0.12);
     transition-duration: 150ms;
@@ -374,7 +375,7 @@
 .ankhdo-clear-count {
     font-size: 12px;
     font-weight: 800;
-    color: #A3ABC6;
+    color: #B3AA96;
 }
 
 .ankhdo-clear-btn:hover .ankhdo-clear-count {
@@ -407,7 +408,7 @@
 
 .ankhdo-confirm-sub {
     font-size: 12px;
-    color: #A3ABC6;
+    color: #B3AA96;
     padding-top: 2px;
 }
 
@@ -438,7 +439,7 @@
 .ankhdo-undo-label {
     font-size: 12.5px;
     font-weight: 600;
-    color: #A3ABC6;
+    color: #B3AA96;
 }
 
 .ankhdo-undo-btn {
@@ -458,8 +459,8 @@
 
 /* ── Tooltip ──────────────────────────────────────────────────────── */
 .ankhdo-tooltip {
-    background-color: #1C2136;
-    border: 1px solid rgba(111, 154, 224, 0.45);
+    background-color: #211E1A;
+    border: 1px solid rgba(232, 197, 106, 0.25);
     border-radius: 8px;
     padding: 6px 10px;
     color: #EAD9B0;
@@ -473,6 +474,11 @@
 .ankhdo-clear-glyph,
 .ankhdo-confirm-glyph {
     color: #E89A4F;
+}
+
+/* The shell's separator, tinted for the basalt ground. */
+.ankhdo-menu .popup-separator-menu-item-separator {
+    background-color: rgba(234, 217, 176, 0.09);
 }
 
 /* ════════════════════════════════════════════════════════════════════

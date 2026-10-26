@@ -10,7 +10,7 @@ export default class AnkhDoPreferences extends ExtensionPreferences {
         const group = new Adw.PreferencesGroup({title: 'Appearance'});
         const lightRow = new Adw.SwitchRow({
             title: 'Off-white theme',
-            subtitle: 'A light papyrus look instead of night lapis',
+            subtitle: 'A light papyrus look instead of black basalt',
         });
         settings.bind('light-theme', lightRow, 'active', Gio.SettingsBindFlags.DEFAULT);
 

@@ -5,7 +5,7 @@
 # Ankh Do
 
 **A pharaonic to-do list for your GNOME top bar and your browser toolbar.**<br>
-Drag deeds into order, time them, undo mistakes — under a tomb-ceiling sky of lapis and gold.
+Drag deeds into order, time them, undo mistakes. Gold and papyrus on black basalt.
 
 ![GNOME Shell 45–48](https://img.shields.io/badge/GNOME_Shell-45–48-4A86CF?logo=gnome&logoColor=white)
 ![Firefox](https://img.shields.io/badge/Firefox-140+-E2B957?logo=firefoxbrowser&logoColor=white)
@@ -83,8 +83,8 @@ add a task. Press <kbd>↑</kbd> to move into the list.
 - **Browsers:** right-click the ankh in the toolbar and choose **Options**
   (in Firefox: **Manage Extension → Options**).
 
-- **Off-white theme**: a light papyrus ground with ink text, instead of night
-  lapis. Accents keep their meanings in deeper shades so they stay readable.
+- **Off-white theme**: a light papyrus ground with ink text, instead of black
+  basalt. Accents keep their meanings in deeper shades so they stay readable.
 
 ## Install
 
@@ -142,7 +142,7 @@ single job that matches what it meant to them.
 
 | Colour | | Meaning | Used for |
 | --- | --- | --- | --- |
-| Night lapis | `#141829` | Nut's starry sky on tomb ceilings | The ground |
+| Basalt | `#171513` | *Kem*, black: the fertile Nile soil, and the granite of statues | The ground |
 | Papyrus cream | `#EAD9B0` | The scroll | Text |
 | Gold | `#E8C56A` | The flesh of the gods | The name and the ankh |
 | Turquoise | `#45C4B0` | Hathor's faience | The task you're timing |

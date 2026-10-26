@@ -13,3 +13,6 @@ ankh-do-browser.zip
 
 # compiled locally for the symlinked dev install
 schemas/gschemas.compiled
+
+# Personal store-listing notes
+store/chrome/listing.md

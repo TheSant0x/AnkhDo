@@ -1,0 +1,19 @@
+Ankh Do is a small to-do list that lives in your browser toolbar.
+
+Click the ankh, type a task and press Enter. Check things off as you go. If you want to know how long something takes, start its timer. It keeps counting even when the popup is closed.
+
+You can drag tasks to change their order, edit them in place, copy their text, or delete them. If you delete one by accident, there's an Undo button for a few seconds. A badge on the toolbar icon shows how many tasks are still open.
+
+Everything works from the keyboard too:
+Up/Down: move between tasks
+Alt+Up/Down: move a task up or down
+Space: mark as done
+Enter or F2: edit
+T: start or pause the timer
+C: copy
+Delete: delete
+Esc: cancel or close
+
+Prefer a light look? Turn on the off-white theme in Options.
+
+Your tasks are saved locally in your browser and never leave your computer. The extension doesn't connect to the internet and collects no data.

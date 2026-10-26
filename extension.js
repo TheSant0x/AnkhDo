@@ -114,7 +114,7 @@ class AnkhDoIndicator extends PanelMenu.Button {
             style_class: 'ankhdo-panel-pill',
             y_align: Clutter.ActorAlign.CENTER,
         });
-        panelBox.add_child(glyph(ext, 'ankh-panel', 16));
+        panelBox.add_child(glyph(ext, 'ankh-panel', 16, 'ankhdo-panel-icon'));
         this._panelCount = new St.Label({
             text: '',
             y_align: Clutter.ActorAlign.CENTER,

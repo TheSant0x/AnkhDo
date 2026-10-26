@@ -15,10 +15,15 @@
  */
 
 /* ── Panel ──────────────────────────────────────────────────────── */
-/* Native, like the system indicators: a crisp white symbolic ankh and the
-   count in the panel's own colour and font; the shell draws hover/active. */
+/* Sits with the system indicators: the count uses the panel's own colour
+   and font, and the shell draws hover/active. */
 .ankhdo-panel-pill {
     spacing: 6px;
+}
+
+/* The one touch of colour in the top bar: a muted brass, not bright gold. */
+.ankhdo-panel-icon {
+    color: #E2C278;
 }
 
 .ankhdo-panel-count {

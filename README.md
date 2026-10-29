@@ -13,6 +13,10 @@ Drag deeds into order, time them, undo mistakes. Gold and papyrus on black basal
 ![License](https://img.shields.io/badge/license-GPL--2.0--or--later-6F9AE0)
 ![No tracking](https://img.shields.io/badge/data-stays_on_your_machine-5FB98A)
 
+[![Get it on GNOME Extensions](https://img.shields.io/badge/GNOME_Extensions-Get_it-4A86CF?style=for-the-badge&logo=gnome&logoColor=white)](https://extensions.gnome.org/extension/11428/ankh-do/)
+[![Get it on Firefox Add-ons](https://img.shields.io/badge/Firefox_Add--ons-Get_it-FF7139?style=for-the-badge&logo=firefoxbrowser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/ankhdo/)
+[![Get it on the Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Get_it-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/ankh-do-to-do-list-task-t/infcbgijejoefdeijbchkllkbgpioggj)
+
 <img src="screenshots/hero.png" alt="Ankh Do with six tasks: one running a timer and showing its controls, two completed" width="632">
 
 </div>
@@ -22,11 +26,11 @@ Drag deeds into order, time them, undo mistakes. Gold and papyrus on black basal
 Ankh Do lives in two places with the same design, features and keyboard
 shortcuts:
 
-- **GNOME Shell** — a white ankh with your open-task count in the top bar,
+- **GNOME Shell:** a soft-gold ankh with your open-task count in the top bar,
   sitting with the system indicators. Click it for the menu.
-- **Firefox, Chrome, Brave, Edge** (and other Chromium browsers): a gold-on-lapis
-  ankh in the toolbar with a badge counting open
-  tasks. Click it for the popup.
+- **Firefox, Chrome, Brave, Edge** (and other Chromium browsers): a gold
+  line-art ankh in the toolbar, with a badge counting open tasks. Click it for
+  the popup.
 
 Each keeps its own list; they don't sync.
 
@@ -88,7 +92,22 @@ add a task. Press <kbd>↑</kbd> to move into the list.
 
 ## Install
 
-### GNOME Shell
+### From the stores
+
+| Platform | Install |
+| --- | --- |
+| GNOME Shell 45–48 | [extensions.gnome.org](https://extensions.gnome.org/extension/11428/ankh-do/), or the **Extension Manager** app (search "Ankh Do") |
+| Firefox 140+ | [addons.mozilla.org](https://addons.mozilla.org/en-US/firefox/addon/ankhdo/) |
+| Chrome, Brave, Edge, Opera, Vivaldi | [Chrome Web Store](https://chromewebstore.google.com/detail/ankh-do-to-do-list-task-t/infcbgijejoefdeijbchkllkbgpioggj) |
+
+Brave and other Chromium browsers install straight from the Chrome Web Store.
+In Edge, allow extensions from other stores when it asks.
+
+### From source
+
+For development, or to try unreleased changes.
+
+#### GNOME Shell
 
 Requires GNOME Shell 45, 46, 47 or 48 (developed and tested on 48).
 
@@ -108,15 +127,15 @@ extension inside it:
 dbus-run-session -- gnome-shell --nested --wayland
 ```
 
-### Firefox
+#### Firefox
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on** and choose `browser/manifest.json`.
 
 Temporary add-ons are removed when Firefox closes; for a permanent install,
-use the signed version from addons.mozilla.org (see publishing below).
+use the version from addons.mozilla.org.
 
-### Chrome, Brave, Edge and other Chromium browsers
+#### Chrome, Brave, Edge and other Chromium browsers
 
 1. Open the extensions page (`chrome://extensions`, `brave://extensions`,
    `edge://extensions`) and turn on **Developer mode**.

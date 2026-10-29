@@ -277,18 +277,20 @@
 
 /* Other extensions restyle every StEntry inside popups with !important
    (Blur my Shell gives them a lighter box and white text), so our fields
-   must use !important too, in every state. */
-.ankhdo-input-shell .ankhdo-entry,
-.ankhdo-input-shell .ankhdo-entry:hover,
-.ankhdo-input-shell .ankhdo-entry:focus,
-.ankhdo-input-shell .ankhdo-entry:active {
+   must use !important too, in every state. Their selectors
+   (".bms-popup-background-transparent .popup-menu-content StEntry") outrank
+   two plain classes, so ours add .ankhdo-menu and the StEntry type to win. */
+.ankhdo-menu .ankhdo-input-shell StEntry.ankhdo-entry,
+.ankhdo-menu .ankhdo-input-shell StEntry.ankhdo-entry:hover,
+.ankhdo-menu .ankhdo-input-shell StEntry.ankhdo-entry:focus,
+.ankhdo-menu .ankhdo-input-shell StEntry.ankhdo-entry:active {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     color: #EAD9B0 !important;
 }
 
-.ankhdo-input-shell .ankhdo-entry StLabel.hint-text {
+.ankhdo-menu .ankhdo-input-shell StEntry.ankhdo-entry StLabel.hint-text {
     color: #968C79 !important;
 }
 
@@ -298,9 +300,9 @@
     border-radius: 10px;
 }
 
-.ankhdo-edit-shell .ankhdo-edit-entry,
-.ankhdo-edit-shell .ankhdo-edit-entry:hover,
-.ankhdo-edit-shell .ankhdo-edit-entry:focus {
+.ankhdo-menu .ankhdo-edit-shell StEntry.ankhdo-edit-entry,
+.ankhdo-menu .ankhdo-edit-shell StEntry.ankhdo-edit-entry:hover,
+.ankhdo-menu .ankhdo-edit-shell StEntry.ankhdo-edit-entry:focus {
     background-color: #211E1A !important;
     border: 1px solid rgba(195, 204, 224, 0.45) !important;
     border-radius: 8px;
@@ -313,11 +315,11 @@
     selected-color: #F4ECD8;
 }
 
-.ankhdo-edit-shell .ankhdo-edit-entry:focus {
+.ankhdo-menu .ankhdo-edit-shell StEntry.ankhdo-edit-entry:focus {
     border-color: #C3CCE0 !important;
 }
 
-.ankhdo-edit-shell .ankhdo-edit-entry StLabel.hint-text {
+.ankhdo-menu .ankhdo-edit-shell StEntry.ankhdo-edit-entry StLabel.hint-text {
     color: #968C79 !important;
 }
 
@@ -608,14 +610,14 @@
     border-color: rgba(44, 91, 170, 0.45);
 }
 
-.ankhdo-light .ankhdo-input-shell .ankhdo-entry,
-.ankhdo-light .ankhdo-input-shell .ankhdo-entry:hover,
-.ankhdo-light .ankhdo-input-shell .ankhdo-entry:focus,
-.ankhdo-light .ankhdo-input-shell .ankhdo-entry:active {
+.ankhdo-menu.ankhdo-light .ankhdo-input-shell StEntry.ankhdo-entry,
+.ankhdo-menu.ankhdo-light .ankhdo-input-shell StEntry.ankhdo-entry:hover,
+.ankhdo-menu.ankhdo-light .ankhdo-input-shell StEntry.ankhdo-entry:focus,
+.ankhdo-menu.ankhdo-light .ankhdo-input-shell StEntry.ankhdo-entry:active {
     color: #2B2418 !important;
 }
 
-.ankhdo-light .ankhdo-input-shell .ankhdo-entry StLabel.hint-text {
+.ankhdo-menu.ankhdo-light .ankhdo-input-shell StEntry.ankhdo-entry StLabel.hint-text {
     color: #736A58 !important;
 }
 
@@ -624,9 +626,9 @@
     background-color: rgba(74, 83, 104, 0.06);
 }
 
-.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry,
-.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:hover,
-.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:focus {
+.ankhdo-menu.ankhdo-light .ankhdo-edit-shell StEntry.ankhdo-edit-entry,
+.ankhdo-menu.ankhdo-light .ankhdo-edit-shell StEntry.ankhdo-edit-entry:hover,
+.ankhdo-menu.ankhdo-light .ankhdo-edit-shell StEntry.ankhdo-edit-entry:focus {
     background-color: #FFFDF8 !important;
     border-color: rgba(74, 83, 104, 0.35) !important;
     color: #2B2418 !important;
@@ -634,11 +636,11 @@
     selected-color: #2B2418;
 }
 
-.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry:focus {
+.ankhdo-menu.ankhdo-light .ankhdo-edit-shell StEntry.ankhdo-edit-entry:focus {
     border-color: #4A5368 !important;
 }
 
-.ankhdo-light .ankhdo-edit-shell .ankhdo-edit-entry StLabel.hint-text {
+.ankhdo-menu.ankhdo-light .ankhdo-edit-shell StEntry.ankhdo-edit-entry StLabel.hint-text {
     color: #736A58 !important;
 }
 

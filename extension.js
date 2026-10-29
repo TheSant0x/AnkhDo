@@ -67,6 +67,21 @@ function glyph(ext, name, size, styleClass) {
     return icon;
 }
 
+// Ctrl+A in a text field selects by the letter typed, so with a non-Latin
+// layout (Arabic, Hebrew, Russian…) the A key types ش etc. and nothing is
+// selected. Fall back to the physical A key in that case only, so Latin
+// layouts such as AZERTY keep their own Ctrl+A.
+const KEYCODE_A = 38; // evdev KEY_A + 8
+function selectAllOnAnyLayout(entry) {
+    entry.clutter_text.connect('key-press-event', (text, event) => {
+        if (!(event.get_state() & Clutter.ModifierType.CONTROL_MASK)) return Clutter.EVENT_PROPAGATE;
+        if (event.get_key_symbol() < 0x100 || event.get_key_code() !== KEYCODE_A)
+            return Clutter.EVENT_PROPAGATE;
+        text.set_selection(0, -1);
+        return Clutter.EVENT_STOP;
+    });
+}
+
 function liveElapsedSeconds(task) {
     if (task.running && task.startedAt)
         return task.elapsedSeconds + Math.floor((Date.now() - task.startedAt) / 1000);
@@ -561,6 +576,7 @@ class AnkhDoIndicator extends PanelMenu.Button {
             style_class: 'ankhdo-entry',
         });
         entry.clutter_text.set_max_length(MAX_TITLE_LEN);
+        selectAllOnAnyLayout(entry);
         entry.get_clutter_text().connect('activate', () => {
             const title = entry.get_text().trim().slice(0, MAX_TITLE_LEN);
             if (!title) return;
@@ -975,6 +991,7 @@ class AnkhDoIndicator extends PanelMenu.Button {
             style_class: 'ankhdo-edit-entry',
         });
         entry.clutter_text.set_max_length(MAX_TITLE_LEN);
+        selectAllOnAnyLayout(entry);
         const commit = () => {
             const val = entry.get_text().trim().slice(0, MAX_TITLE_LEN);
             if (val) task.title = val;
